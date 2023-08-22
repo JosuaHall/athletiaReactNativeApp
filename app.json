@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "Athletia",
+    "slug": "athletia-app",
+    "description": "Athletia is a platform which provides the foundation for increasing the relationship between students and school`s athletic departments, by providing a unique student focused platform which benefits both the students themselves and the schools who uses this platform. Athletia`s main goal is to increase attendance at school sports events and drives student satisfaction and well-being for any school which uses its platform. ",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f2b4e"
+    },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Athletia to access your photos.",
+          "savePhotosPermission": "Allow Athletia to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app requires location access to function properly.",
+        "NSPhotoLibraryUsageDescription": "Allow Athletia to access your photos.",
+        "NSPhotoLibraryAddUsageDescription": "Allow Athletia to save photos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0f2b4e"
+      },
+      "userInterfaceStyle": "automatic",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d74d09a4-983c-4524-9922-ba7d8e60ce1e"
+      }
+    }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3940256099942544",
+    "ios_app_id": "ca-app-pub-3940256099942544"
+  }
+}
