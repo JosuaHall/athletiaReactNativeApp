@@ -23,6 +23,7 @@ import {
   TEAM_LEADERBOARD_DELETED,
   POINTS_UPDATED,
   RESET_POINTS_UPDATED,
+  TRIGGER_SCROLL_TO_LATEST_EVENT,
 } from "./types";
 import axios from "axios";
 import { proxy } from "./../package.json";
@@ -428,4 +429,8 @@ export const updatePoints = (userid, teamid, orgid, eventid) => (dispatch) => {
     .catch((err) => {
       dispatch({ type: POINTS_UPDATED });
     });
+};
+
+export const triggerScrollToLatestEvent = (val) => (dispatch) => {
+  dispatch({ type: TRIGGER_SCROLL_TO_LATEST_EVENT, payload: val });
 };

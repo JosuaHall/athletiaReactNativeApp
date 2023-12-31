@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     width: 100,

@@ -8,14 +8,17 @@ import {
   Image,
   Dimensions,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import SearchBar from "./../../components/SearchBar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
+import { selectedUser } from "../../actions/eventActions";
 
 const PeopleGoingScreenScreen = ({ navigation }) => {
   const { colors } = useTheme();
+  const dispatch = useDispatch();
   const userid = useSelector((state) => state.auth.user._id);
   const user_attending_list = useSelector(
     (state) => state.event.people_attending
@@ -65,6 +68,11 @@ const PeopleGoingScreenScreen = ({ navigation }) => {
     setSearchTerm(term);
   };
 
+  const handleUserSelected = (user) => {
+    dispatch(selectedUser(user));
+    navigation.navigate("ProfileDetails");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.search}>
@@ -86,7 +94,10 @@ const PeopleGoingScreenScreen = ({ navigation }) => {
         <FlatList
           data={filtered_users}
           renderItem={({ item }) => (
-            <View style={{ backgroundColor: colors.card, ...styles.userCard }}>
+            <TouchableOpacity
+              onPress={() => handleUserSelected(item)}
+              style={{ backgroundColor: colors.card, ...styles.userCard }}
+            >
               {item.profileImg ? (
                 <Image
                   style={styles.profileImg}
@@ -113,7 +124,7 @@ const PeopleGoingScreenScreen = ({ navigation }) => {
                   {`${item.firstName} ${item.lastName}`}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           keyExtractor={(item) => item._id}
         />
@@ -206,7 +217,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   profileImg: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 30,

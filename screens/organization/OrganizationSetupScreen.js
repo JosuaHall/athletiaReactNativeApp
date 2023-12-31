@@ -412,7 +412,6 @@ const styles = StyleSheet.create({
     minHeight: 70,
   },
   logoRequest: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
@@ -422,7 +421,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,

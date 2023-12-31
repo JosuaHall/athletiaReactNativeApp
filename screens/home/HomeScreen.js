@@ -1,5 +1,11 @@
 // HomeScreen.js
-import React, { useEffect, useState, Fragment, useRef } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useState,
+  Fragment,
+  useRef,
+} from "react";
 import {
   View,
   Text,
@@ -13,7 +19,7 @@ import { captureRef, shareAsync } from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 
-import { useTheme } from "@react-navigation/native";
+import { useTheme, useFocusEffect } from "@react-navigation/native";
 import EventSlider from "../../components/home/EventSlider";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,10 +27,14 @@ import OrganizationHeaderHome from "./../../components/home/OrganizationHeaderHo
 import { setHomeOrganization } from "../../actions/organizationActions";
 import { Ionicons } from "@expo/vector-icons";
 import { getOrganizationHome } from "../../actions/organizationActions";
+import { setActiveEventIndex } from "../../actions/eventActions";
+import { triggerScrollToLatestEvent } from "./../../actions/organizationActions";
 
 const HomeScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+
+  const eventSliderRef = useRef(null);
   const organizations_followed = useSelector(
     (state) => state.auth.user.organizations_followed
   );
@@ -33,6 +43,9 @@ const HomeScreen = ({ navigation }) => {
   );
   const upToDateOrgObject = useSelector(
     (state) => state.organization.homeOrgRender
+  );
+  const homeButtonTrigger = useSelector(
+    (state) => state.organization.homeButton
   );
   // Define the ref for capturing the HomeScreen component
   const homeScreenRef = useRef(null);
@@ -66,6 +79,14 @@ const HomeScreen = ({ navigation }) => {
         setRefreshing(false);
       });
   };
+
+  useEffect(() => {
+    if (homeButtonTrigger) {
+      scrollTo();
+      // Reset the homeButtonTrigger after it's used
+      dispatch(triggerScrollToLatestEvent(false));
+    }
+  }, [homeButtonTrigger]);
 
   //checks if user follows any organizations
   useEffect(() => {
@@ -128,11 +149,30 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const scrollTo = () => {
+    // Trigger the scrollToItem function from the parent component
+    if (eventSliderRef.current) {
+      eventSliderRef.current.scrollToItem(); // Replace 2 with the desired index
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribeFocus = navigation.addListener("focus", () => {
+      // Scroll to the last item when the "Home" tab is focused
+      scrollTo();
+    });
+
+    return unsubscribeFocus;
+  }, [navigation]);
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh && scrollTo}
+        />
       }
     >
       <View
@@ -161,6 +201,7 @@ const HomeScreen = ({ navigation }) => {
                 organization={selectedOrg}
                 navigation={navigation}
                 onShare={handleShare}
+                ref={eventSliderRef}
               ></EventSlider>
             </Fragment>
           )

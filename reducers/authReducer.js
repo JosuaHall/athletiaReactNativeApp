@@ -23,6 +23,8 @@ import {
   SUBMIT_NEW_PASSWORD_SUCCESS,
   SUBMIT_NEW_PASSWORD_FAIL,
   API_KEY_LOADED,
+  SOCIALS_UPDATED,
+  RESET_UPDATED_SOCIALS,
 } from "../actions/types";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,6 +43,7 @@ const initialState = {
   passwordResetLinkSent: false,
   passwordResetToken: "",
   apiKey: "",
+  updatedSocials: [],
 };
 
 export default function (state = initialState, action) {
@@ -176,6 +179,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         apiKey: action.payload.apiKey,
+      };
+    case SOCIALS_UPDATED:
+      return {
+        ...state,
+        updatedSocials: action.payload,
+      };
+    case RESET_UPDATED_SOCIALS:
+      return {
+        ...state,
+        updatedSocials: [],
       };
     default:
       return state;

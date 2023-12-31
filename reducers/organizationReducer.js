@@ -22,6 +22,7 @@ import {
   LEADERBOARD_DELETED,
   POINTS_UPDATED,
   RESET_POINTS_UPDATED,
+  TRIGGER_SCROLL_TO_LATEST_EVENT,
 } from "../actions/types";
 
 const initialState = {
@@ -48,6 +49,7 @@ const initialState = {
   orgLeaderboard: "",
   allLeaderboards: "",
   pointsUpdated: false,
+  homeButton: false,
   //stores currently selected Organization
   //homeSelectedOrgRender: //needs to store the uptodate org object coming from getOrg
   //                       triggers: user attends,unattends, changes org selected, unfollowed, follow
@@ -184,6 +186,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         pointsUpdated: false,
+      };
+    case TRIGGER_SCROLL_TO_LATEST_EVENT:
+      return {
+        ...state,
+        homeButton: action.payload,
       };
     default:
       return state;

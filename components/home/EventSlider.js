@@ -1,5 +1,11 @@
 //EventSlider.js
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useImperativeHandle,
+} from "react";
 import {
   StyleSheet,
   View,
@@ -9,11 +15,19 @@ import {
   Dimensions,
   ScrollView,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import {
+  useTheme,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
+import CustomCarousel from "./CustomCarousel";
 import EventCard from "./EventCard";
 import { useSelector, useDispatch } from "react-redux";
-import { setAttendingUsers } from "./../../actions/eventActions";
+import {
+  setActiveEventIndex,
+  setAttendingUsers,
+} from "./../../actions/eventActions";
 import {
   attendEvent,
   unattendEvent,
@@ -22,9 +36,11 @@ import {
 } from "../../actions/organizationActions";
 import { Ionicons } from "@expo/vector-icons";
 
-const EventSlider = ({ navigation, onShare }) => {
+const EventSlider = ({ navigation, route, onShare }, ref) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+
+  const carouselRef = useRef(null);
   const eventFilter = useSelector((state) => state.event.filter);
   const user_id = useSelector((state) => state.auth.user._id);
   const org_id = useSelector((state) => state.organization.homeOrgRender._id);
@@ -34,6 +50,7 @@ const EventSlider = ({ navigation, onShare }) => {
   );
   const [data, setData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
+
   const sliderWidth = Dimensions.get("window").width;
   const itemWidth = sliderWidth - 100;
 
@@ -52,67 +69,48 @@ const EventSlider = ({ navigation, onShare }) => {
   );
   const teamLeaderboard = useSelector((state) => state.team.teamLeaderboard);
 
+  useImperativeHandle(ref, () => ({
+    scrollToItem: () => {
+      if (carouselRef.current) {
+        const currentDate = new Date();
+        const all_events = data;
+        const index = all_events.findIndex(
+          (event) => new Date(event.date_time) >= currentDate
+        );
+        const lastElementIndex = all_events.length - 1;
+        const idx = index >= 0 ? index : lastElementIndex;
+        carouselRef.current.snapToItem(idx);
+      }
+    },
+  }));
+
   useEffect(() => {
+    // currently not in use
     if (leaderboards) setAllLeaderboards(leaderboards);
   }, [leaderboards]);
 
   useEffect(() => {
-    dispatch(getAllLeaderboardsOfOrganization(orgIds));
-    dispatch(resetPointsUpdated());
+    //dispatch(getAllLeaderboardsOfOrganization(orgIds));   currently not in use
+    //dispatch(resetPointsUpdated());
   }, [, followedOrg, user, orgLeaderboard, teamLeaderboard, pointsUpdated]);
-
-  /*
-  // Apply the filter to the teams array
-  useEffect(() => {
-    if (teams && eventFilter) {
-      // Check if teams and eventFilter are defined
-      const filteredTeams = teams.filter(
-        (team) =>
-          eventFilter.teams.length === 0 ||
-          eventFilter.teams.includes(team.sport)
-      );
-      const all_events = []
-        .concat(
-          ...filteredTeams.map((team) =>
-            team.events
-              .filter(
-                (event) =>
-                  (!eventFilter.startDate ||
-                    new Date(event.date_time) >=
-                      new Date(eventFilter.startDate)) &&
-                  (!eventFilter.endDate ||
-                    new Date(event.date_time) <=
-                      new Date(eventFilter.endDate)) &&
-                  (!eventFilter.homeAway ||
-                    eventFilter.homeAway.includes(event.home_away))
-              )
-              .map((event) => ({
-                ...event,
-                sport: team.sport,
-                key: event._id,
-                teamid: team._id,
-              }))
-          )
-        )
-        .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
-
-      setData(all_events);
-      const currentDate = new Date();
-      const index = all_events.findIndex(
-        (event) => new Date(event.date_time) > currentDate
-      );
-      setActiveIndex(index >= 0 ? index : 0);
-    }
-  }, [eventFilter]);*/
 
   // Set the initial data
   useEffect(() => {
+    const processedEvents = processEvents(teams, eventFilter);
+    setData(processedEvents.data);
+    setActiveIndex(processedEvents.activeIndex);
+    dispatch(setActiveEventIndex(processedEvents.activeIndex));
+  }, [teams, eventFilter]);
+
+  //get the events that need to be displayed
+  const processEvents = (teams, eventFilter) => {
     if (teams && eventFilter) {
       const filteredTeams = teams.filter(
         (team) =>
           eventFilter.teams.length === 0 ||
           eventFilter.teams.includes(team.sport)
       );
+
       const all_events = []
         .concat(
           ...filteredTeams.map((team) =>
@@ -138,14 +136,14 @@ const EventSlider = ({ navigation, onShare }) => {
         )
         .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
 
-      setData(all_events);
       const currentDate = new Date();
       const index = all_events.findIndex(
         (event) => new Date(event.date_time) >= currentDate
       );
-      const lastElementIndex = all_events.length - 1; // Index of the last element in the array
+      const lastElementIndex = all_events.length - 1;
       const activeIndex = index >= 0 ? index : lastElementIndex;
-      setActiveIndex(activeIndex);
+
+      return { data: all_events, activeIndex };
     } else if (teams) {
       const all_events = []
         .concat(
@@ -160,14 +158,18 @@ const EventSlider = ({ navigation, onShare }) => {
         )
         .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
 
-      setData(all_events);
       const currentDate = new Date();
       const index = all_events.findIndex(
         (event) => new Date(event.date_time) > currentDate
       );
-      setActiveIndex(index >= 0 ? index : 0);
+
+      const activeIndex = index >= 0 ? index : 0;
+
+      return { data: all_events, activeIndex };
     }
-  }, [teams, eventFilter]);
+
+    return { data: [], activeIndex: 0 };
+  };
 
   const attendingEvent = (e, event) => {
     //action: attendEvent   orgid, teamid, eventid, userid
@@ -200,12 +202,14 @@ const EventSlider = ({ navigation, onShare }) => {
     dispatch(setAttendingUsers(people_attending));
     navigation.navigate("PeopleGoing");
   };
+
   return (
     <ScrollView style={styles.container}>
       {teams ? (
         teams.length !== 0 && data.length !== 0 ? (
           <Carousel
             data={data} //all events
+            ref={carouselRef}
             renderItem={({ item }) => (
               <EventCard
                 onPress={(e, event) => attendingEvent(e, event)}
@@ -241,9 +245,7 @@ const EventSlider = ({ navigation, onShare }) => {
             </Text>
           </View>
         )
-      ) : (
-        ""
-      )}
+      ) : null}
     </ScrollView>
   );
 };
@@ -252,4 +254,4 @@ const styles = StyleSheet.create({
   container: {},
 });
 
-export default EventSlider;
+export default React.forwardRef(EventSlider);

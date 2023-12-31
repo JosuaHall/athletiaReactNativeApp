@@ -7,7 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 import DeleteButton from "./../../components/DeleteButton";
 import { logout, updateUserPrivacySetting } from "../../actions/authActions";
 import SquareImagePicker from "./../../components/SquareImagePicker";
-import { updateProfilePicture } from "./../../actions/authActions";
+import {
+  updateProfilePicture,
+  resetUpdatedSocials,
+} from "./../../actions/authActions";
 import DropDownProfileSetting from "../../components/register/DropDownProfileSetting";
 
 const EditProfileScreen = ({ navigation }) => {
@@ -30,6 +33,10 @@ const EditProfileScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(updateUserPrivacySetting(user._id, isPrivate));
   }, [isPrivate]);
+
+  useEffect(() => {
+    dispatch(resetUpdatedSocials());
+  }, []);
 
   const handleImageSelected = async (asset) => {
     try {
@@ -132,7 +139,6 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex: 1,
-    textAlign: "center",
   },
   name: {
     flex: 1,

@@ -219,7 +219,6 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex: 1,
-    textAlign: "center",
     resizeMode: "contain",
   },
   name: {

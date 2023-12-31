@@ -22,11 +22,11 @@ const InfoScreen = ({ navigation }) => {
           <Image style={styles.athletiaLogo} source={Icon} />
         </View>
         <Text style={{ ...styles.description }}>
-          See who's going to sports events on campus!{" "}
+          See who's going to sports events!{" "}
         </Text>
         <Text style={{ ...styles.description }}>
-          Find out which friends are attending the upcoming basketball game and
-          let others know which games you're going to
+          Find out which friends are attending the upcoming football game and
+          let others know which games you're going to.
         </Text>
 
         <View style={styles.buttonsContainer}>
@@ -47,11 +47,13 @@ const InfoScreen = ({ navigation }) => {
 
       <View style={styles.containerImage}>
         <Text style={styles.imageTitle}>
-          "Sam, Alex and Emma are all going to see Thursday's volleyball game on
-          campus"
+          "Sam, Alex and Emma are all going to see Thursday's football game of
+          your club"
         </Text>
         <View
-          style={{ background: colors.background, ...styles.demoContainer }}
+          style={{
+            ...styles.demoContainer,
+          }}
         >
           <Image style={styles.demoScreen} source={Icon2} />
         </View>
@@ -124,14 +126,12 @@ const styles = StyleSheet.create({
   demoContainer: {
     alignItems: "center",
     resizeMode: "contain",
-    justifySelf: "flex-start",
     width: Dimensions.get("window").width - 30,
   },
   demoScreen: {
     flex: 2,
     resizeMode: "contain",
-    justifySelf: "flex-start",
-    paddingTop: "80%",
+    paddingTop: 550,
   },
   /**************************/
 });

@@ -1,3 +1,5 @@
+//Currently, this feature is not in use
+
 import React, { Fragment, useEffect, useState } from "react";
 import {
   View,

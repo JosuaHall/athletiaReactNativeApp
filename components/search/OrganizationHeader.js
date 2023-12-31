@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     width: 80,

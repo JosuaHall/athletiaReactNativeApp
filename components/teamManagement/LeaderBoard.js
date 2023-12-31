@@ -538,7 +538,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     width: 80,

@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileImg: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 25,

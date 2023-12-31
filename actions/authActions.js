@@ -28,6 +28,8 @@ import {
   SUBMIT_NEW_PASSWORD_SUCCESS,
   SUBMIT_NEW_PASSWORD_FAIL,
   API_KEY_LOADED,
+  SOCIALS_UPDATED,
+  RESET_UPDATED_SOCIALS,
 } from "./types";
 import { resetTeamReducer } from "./teamActions";
 import { resetLeaderboard } from "./organizationActions";
@@ -372,6 +374,33 @@ export const unfollowOrganization = (userid, orgid) => (dispatch) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const updateSocials = (updatedSocials) => (dispatch) => {
+  dispatch({ type: SOCIALS_UPDATED, payload: updatedSocials });
+};
+
+export const saveUpdatedSocials = (userid, updatedSocials) => (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  //Request body
+  const body = JSON.stringify({ socials: updatedSocials });
+
+  axios
+    .put(`${proxy}/api/users/updateSocials/${userid}`, body, config)
+    .then((res) => {
+      dispatch({ type: SOCIALS_UPDATED, payload: res.data });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const resetUpdatedSocials = () => (dispatch) => {
+  dispatch({ type: RESET_UPDATED_SOCIALS });
 };
 
 export const isTeamFollowed = (followed) => (dispatch) => {

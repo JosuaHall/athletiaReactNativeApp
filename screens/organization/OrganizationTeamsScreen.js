@@ -163,7 +163,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,

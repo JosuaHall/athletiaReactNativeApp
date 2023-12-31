@@ -16,7 +16,7 @@ import { useTheme } from "@react-navigation/native";
 import InputField from "../../components/InputField";
 import DeleteButton from "./../../components/DeleteButton";
 import CreateButton from "../../components/CreateButton";
-import DateTimePicker2 from "../../components/DateTimePicker2";
+//import DateTimePicker2 from "../../components/DateTimePicker2";
 import DropdownList from "./../../components/DrodownList";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -330,7 +330,6 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   logo: {
-    textAlign: "center",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     borderRadius: 14,

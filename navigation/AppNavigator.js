@@ -30,6 +30,7 @@ import ForgotPasswordScreen from "../screens/guest/ForgotPasswordScreen";
 import ResetPasswordScreen from "../screens/guest/ResetPasswordScreen";
 import { useTheme } from "@react-navigation/native";
 import FindAddressScreen from "../screens/organization/FindAddressScreen";
+import { triggerScrollToLatestEvent } from "../actions/organizationActions";
 
 import {
   TouchableOpacity,
@@ -49,13 +50,17 @@ import OrganizationPrizeScreen from "../screens/organization/OrganizationPrizeSc
 import LeaderBoardScreen from "../screens/leaderboard/LeaderBoardScreen";
 import TeamPrizeScreen from "../screens/organization/TeamPrizeScreen";
 import LeaderBoardsOfOrganizationScreen from "../screens/leaderboard/LeaderBoardsOfOrganizationScreen";
+import ProfileDetailsScreen from "../screens/home/ProfileDetailsScreen";
+import ProfileSettingsScreen from "../screens/profile/ProfileSettingsScreen";
+import { saveUpdatedSocials } from "../actions/authActions";
+import { setActiveEventIndex } from "../actions/eventActions";
 
 const NotAuthenticatedStack = createNativeStackNavigator();
 const OrganizationSetupStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const YourProfileStack = createNativeStackNavigator();
 const SearchStack = createNativeStackNavigator();
-const LeaderBoardStack = createNativeStackNavigator();
+//const LeaderBoardStack = createNativeStackNavigator();  currently not in use
 
 const OrganizationSetupStackScreen = () => {
   const { colors } = useTheme();
@@ -78,6 +83,7 @@ const OrganizationSetupStackScreen = () => {
           headerTitleStyle: {
             fontSize: 20,
           },
+          /* prize/leadboard feature is not in use currently
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.navigate("OrganizationPrize")}
@@ -88,7 +94,7 @@ const OrganizationSetupStackScreen = () => {
                 color={colors.text}
               />
             </TouchableOpacity>
-          ),
+          ),*/
         })}
       />
       <OrganizationSetupStack.Screen
@@ -109,6 +115,7 @@ const OrganizationSetupStackScreen = () => {
           },
         })}
       />
+      {/*prize/leadboard feature is not in use currently
       <OrganizationSetupStack.Screen
         name="OrganizationPrize"
         component={OrganizationPrizeScreen}
@@ -126,7 +133,7 @@ const OrganizationSetupStackScreen = () => {
             fontSize: 20,
           },
         })}
-      />
+      />*/}
       <OrganizationSetupStack.Screen
         name="CreateOrganization"
         component={CreateOrganizationScreen}
@@ -199,6 +206,7 @@ const OrganizationSetupStackScreen = () => {
               },
             },
           }),
+          /*prize/leadboard feature is not in use currently
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("TeamPrize")}>
               <Ionicons
@@ -207,9 +215,10 @@ const OrganizationSetupStackScreen = () => {
                 color={colors.text}
               />
             </TouchableOpacity>
-          ),
+          ),*/
         })}
       />
+      {/*prize/leadboard feature is not in use currently
       <OrganizationSetupStack.Screen
         name="TeamPrize"
         component={TeamPrizeScreen}
@@ -227,7 +236,7 @@ const OrganizationSetupStackScreen = () => {
             fontSize: 20,
           },
         })}
-      />
+      />*/}
       <OrganizationSetupStack.Screen
         name="AddAdmin"
         component={TeamManagementAddAdminScreen}
@@ -339,9 +348,10 @@ const OrganizationSetupStackScreen = () => {
   );
 };
 
-const HomeStackScreen = () => {
+const HomeStackScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -409,9 +419,6 @@ const HomeStackScreen = () => {
           headerTitleStyle: {
             fontSize: 20,
           },
-          headerBackground: () => {
-            colors.background;
-          },
         })}
         component={FilterEventsScreen}
       />
@@ -440,6 +447,19 @@ const HomeStackScreen = () => {
           },
         })}
         component={PeopleGoingScreen}
+      />
+      <HomeStack.Screen
+        name="ProfileDetails"
+        options={({ navigation }) => ({
+          headerTitle: "Profile",
+          headerTitleStyle: {
+            fontSize: 18,
+          },
+          headerBackground: () => {
+            colors.background;
+          },
+        })}
+        component={ProfileDetailsScreen}
       />
     </HomeStack.Navigator>
   );
@@ -492,6 +512,7 @@ const SearchStackScreen = () => {
   );
 };
 
+/*  This feature is currently not in use
 const LeaderBoardStackScreen = () => {
   const { colors } = useTheme();
   return (
@@ -530,10 +551,11 @@ const LeaderBoardStackScreen = () => {
       />
     </LeaderBoardStack.Navigator>
   );
-};
+};*/
 
 const YourProfileStackScreen = () => {
   const { colors } = useTheme();
+  const dispatch = useDispatch();
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const requests = useSelector(
     (state) => state.team.team_admin_requests_profile
@@ -548,6 +570,8 @@ const YourProfileStackScreen = () => {
   const hasCurrentUserAsAdmin = team_admin_requests.some(
     (request) => request.user_recipient._id === userId
   );
+  const user = useSelector((state) => state.auth.user);
+  const updatedSocials = useSelector((state) => state.auth.updatedSocials);
 
   useEffect(() => {
     if (requests.length !== 0) {
@@ -558,6 +582,11 @@ const YourProfileStackScreen = () => {
       else setHasUnreadNotifications(false);
     }
   }, [requests]);
+
+  const onSaveSocials = (navigation) => {
+    dispatch(saveUpdatedSocials(userId, updatedSocials));
+    navigation.navigate("EditProfile");
+  };
 
   return (
     <YourProfileStack.Navigator>
@@ -634,6 +663,7 @@ const YourProfileStackScreen = () => {
               },
             },
           }),
+          /* prize/leadboard feature is not in use currently
           headerRight: () => {
             if (!hasCurrentUserAsAdmin) {
               return (
@@ -649,10 +679,11 @@ const YourProfileStackScreen = () => {
               );
             }
             return null;
-          },
+          },*/
         })}
         component={OrganizationTeamManagementScreen}
       />
+      {/* prize/leadboard feature is not in use currently
       <OrganizationSetupStack.Screen
         name="TeamPrize"
         component={TeamPrizeScreen}
@@ -670,7 +701,7 @@ const YourProfileStackScreen = () => {
             fontSize: 20,
           },
         })}
-      />
+      /> */}
       <YourProfileStack.Screen
         name="findPlace"
         component={FindAddressScreen}
@@ -758,8 +789,44 @@ const YourProfileStackScreen = () => {
           headerTitleStyle: {
             fontSize: 18,
           },
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ProfileSettings")}
+            >
+              <Text
+                style={{
+                  color: colors.text,
+                  height: "100%",
+                  padding: 5,
+                }}
+              >
+                <Ionicons
+                  name="ios-link-outline"
+                  size={24}
+                  color={colors.text}
+                />
+              </Text>
+            </TouchableOpacity>
+          ),
         })}
         component={EditProfileScreen}
+      />
+      <YourProfileStack.Screen
+        name="ProfileSettings"
+        options={({ navigation }) => ({
+          headerTitle: "Socials",
+          headerTitleStyle: {
+            fontSize: 18,
+          },
+          headerRight: () => (
+            <Button
+              title="Save"
+              onPress={() => onSaveSocials(navigation)}
+              disabled={false}
+            ></Button>
+          ),
+        })}
+        component={ProfileSettingsScreen}
       />
       <YourProfileStack.Screen
         name="Notifications"
@@ -845,6 +912,7 @@ const AuthenticatedTab = createBottomTabNavigator();
 const AuthenticatedTabScreen = () => {
   const { colors } = useTheme();
   const isAdminAccount = useSelector((state) => state.auth.user.isAdminAccount);
+  const dispatch = useDispatch();
 
   return (
     <AuthenticatedTab.Navigator
@@ -876,6 +944,15 @@ const AuthenticatedTabScreen = () => {
             <Ionicons name="ios-home" size={24} color={color} />
           ),
         }}
+        listeners={({ navigation, route }) => ({
+          tabPress: (e) => {
+            // Check if the pressed tab is the "Home" tab
+            if (route.name === "Home") {
+              // triggerSrollAnimation in HomeScreen.js
+              dispatch(triggerScrollToLatestEvent(true));
+            }
+          },
+        })}
       />
       <AuthenticatedTab.Screen
         name="Search"
@@ -898,7 +975,7 @@ const AuthenticatedTabScreen = () => {
           ),
         }}
       />
-      <AuthenticatedTab.Screen
+      {/*<AuthenticatedTab.Screen
         name="Leaderboards"
         component={LeaderBoardStackScreen}
         options={{
@@ -918,7 +995,7 @@ const AuthenticatedTabScreen = () => {
             <Ionicons name="ios-trophy-outline" size={24} color={color} />
           ),
         }}
-      />
+      />*/}
       <AuthenticatedTab.Screen
         name="YourProfile"
         component={YourProfileStackScreen}

@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     height: "45%",
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,

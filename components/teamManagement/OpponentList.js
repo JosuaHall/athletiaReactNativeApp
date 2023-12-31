@@ -168,7 +168,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   logo: {
-    textAlign: "center",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     borderRadius: 14,

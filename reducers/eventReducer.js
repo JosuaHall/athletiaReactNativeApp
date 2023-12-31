@@ -15,6 +15,8 @@ import {
   RESET_EVENT_IS_CREATED,
   FILTER_UPDATED,
   FILTER_RESETED,
+  USER_SELECTED,
+  ACTIVE_EVENT_INDEX_SET,
 } from "../actions/types";
 
 const initialState = {
@@ -32,6 +34,8 @@ const initialState = {
   people_attending: "",
   filter: "",
   event_selected: "",
+  user_selected: "",
+  activeEventIndex: 0,
 };
 
 export default function (state = initialState, action) {
@@ -119,6 +123,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         filter: "",
+      };
+    case USER_SELECTED:
+      return {
+        ...state,
+        user_selected: action.payload,
+      };
+    case ACTIVE_EVENT_INDEX_SET:
+      return {
+        ...state,
+        activeEventIndex: action.payload,
       };
     default:
       return state;

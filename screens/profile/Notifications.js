@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex: 1,
-    textAlign: "left",
+
     justifyContent: "flex-start",
     alignItems: "flex-start",
     borderRadius: 35,

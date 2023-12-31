@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: Dimensions.get("window").width - 20,
     flex: 0.1,
-    padding: 10,
+    padding: 1,
+    paddingRight: 10,
     marginTop: 5,
     zIndex: 99999,
   },
@@ -79,7 +80,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   logo: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     width: 80,

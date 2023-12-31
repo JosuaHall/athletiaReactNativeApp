@@ -1,4 +1,3 @@
-import "react-native-gesture-handler";
 import React, { useEffect, useState } from "react";
 import { Appearance, useColorScheme, Alert, Platform } from "react-native";
 import * as Linking from "expo-linking";
@@ -8,17 +7,19 @@ import {
   DefaultTheme,
 } from "@react-navigation/native";
 import AppNavigator from "./navigation/AppNavigator";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { loadUser } from "./actions/authActions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { verifyEmail, verifyPasswordResetLink } from "./actions/authActions";
 import * as Location from "expo-location";
 
 const AppMain = () => {
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
-  let colorScheme = useColorScheme();
+  //let colorScheme = useColorScheme();
   const url = Linking.useURL();
 
   useEffect(() => {
@@ -31,11 +32,11 @@ const AppMain = () => {
     if (path === "api/users/verify") {
       const { code } = queryParams;
       dispatch(verifyEmail({ verificationCode: code }));
-    } /*
+    }
     if (path === "api/users/reset/password") {
       const { code } = queryParams;
       dispatch(verifyPasswordResetLink({ token: code }));
-    }*/
+    }
   };
 
   const requestLocationPermission = async () => {
@@ -47,6 +48,7 @@ const AppMain = () => {
     } else {
       // Location permission is granted
       // You can do something here if needed
+      console.log("Location permission granted");
     }
   };
 
@@ -59,9 +61,7 @@ const AppMain = () => {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer
-        theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-      >
+      <NavigationContainer theme={theme}>
         <AppNavigator />
       </NavigationContainer>
     </SafeAreaProvider>

@@ -3,7 +3,7 @@
     "name": "Athletia",
     "slug": "athletia-app",
     "description": "Athletia is a platform which provides the foundation for increasing the relationship between students and school`s athletic departments, by providing a unique student focused platform which benefits both the students themselves and the schools who uses this platform. Athletia`s main goal is to increase attendance at school sports events and drives student satisfaction and well-being for any school which uses its platform. ",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -29,13 +29,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "userInterfaceStyle": "automatic",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "This app requires location access to function properly.",
-        "NSPhotoLibraryUsageDescription": "Allow Athletia to access your photos.",
+        "NSLocationWhenInUseUsageDescription": "This app requires access to your location to allow you to set the location of your sports team or club, enabling other users to find the sport facility easily. Your location data is only used within the app for this purpose and is not shared with third parties",
+        "NSPhotoLibraryUsageDescription": "Allow Athletia to access your photos for setting profile pictures and team logos, personalizing your user experience.",
         "NSPhotoLibraryAddUsageDescription": "Allow Athletia to save photos."
-      }
+      },
+      "bundleIdentifier": "com.josuahall.athletiaapp",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -50,7 +52,8 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_MEDIA_LOCATION"
-      ]
+      ],
+      "package": "com.josuahall.athletiaapp"
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -61,8 +64,14 @@
       }
     }
   },
-  "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-3940256099942544",
-    "ios_app_id": "ca-app-pub-3940256099942544"
+ 
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "josua-hall@web.de",
+        "ascAppId": "6463032641",
+        "appeTeamId": "36735X89F8"
+      }
+    }
   }
 }

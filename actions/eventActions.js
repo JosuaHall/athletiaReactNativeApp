@@ -13,6 +13,8 @@ import {
   FILTER_UPDATED,
   FILTER_RESETED,
   EVENT_SELECTED,
+  USER_SELECTED,
+  ACTIVE_EVENT_INDEX_SET,
 } from "./types";
 import axios from "axios";
 import { proxy } from "../package.json";
@@ -173,8 +175,16 @@ export const setEventSelected = (event) => (dispatch) => {
   dispatch({ type: EVENT_SELECTED, payload: event });
 };
 
+export const setActiveEventIndex = (index) => (dispatch) => {
+  dispatch({ type: ACTIVE_EVENT_INDEX_SET, payload: index });
+};
+
 export const resetEventFilter = () => (dispatch) => {
   dispatch({ type: FILTER_RESETED });
+};
+
+export const selectedUser = (user) => (dispatch) => {
+  dispatch({ type: USER_SELECTED, payload: user });
 };
 
 export const getEventAttendingUserList =

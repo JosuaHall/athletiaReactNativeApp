@@ -353,6 +353,14 @@ const EventCard = ({
 
   const handleClaimPointsDebounced = debounce(handleClaimPoints, 1000);
 
+  const isDateOlderBy4Hours = (date) => {
+    const currentDate = new Date();
+    const timeDifference = currentDate - date; // Calculate the time difference in milliseconds
+    const fourHoursInMilliseconds = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+    // Compare the time difference with 4 hours
+    return timeDifference > fourHoursInMilliseconds;
+  };
   const address = item.event_location?.address || orgLocation?.address || null;
   return (
     <View style={styles.container}>
@@ -380,7 +388,7 @@ const EventCard = ({
                   <View key={user._id}>
                     {user.profileImg !== "" && !user.isPrivate ? (
                       <Image
-                        style={styles.profileImg}
+                        style={{ ...styles.profileImg, marginRight: -25 }}
                         source={{
                           uri: `${user.profileImg}`,
                         }}
@@ -394,6 +402,7 @@ const EventCard = ({
                           backgroundColor: colors.background,
                           alignItems: "center",
                           justifyContent: "center",
+                          marginRight: -25,
                         }}
                       >
                         <Ionicons
@@ -411,15 +420,17 @@ const EventCard = ({
               {
                 //up to two other users are rendered as well, besides if a user is attending this event
                 item.people_attending
-                  .slice(0, 2)
+                  .slice(0, isGoing ? 4 : 5)
                   .filter((user) => user._id !== userid)
-                  .map((user) => (
+                  .map((user, index) => (
                     <View key={user._id}>
                       {user.profileImg !== "" && !user.isPrivate ? (
                         <Image
                           style={{
                             ...styles.profileImg,
                             borderColor: "#FF9AA2",
+                            zIndex: index,
+                            marginRight: -25,
                           }}
                           source={{
                             uri: `${user.profileImg}`,
@@ -434,6 +445,7 @@ const EventCard = ({
                             backgroundColor: colors.background,
                             alignItems: "center",
                             justifyContent: "center",
+                            marginRight: -25,
                           }}
                         >
                           <Ionicons
@@ -464,15 +476,35 @@ const EventCard = ({
       </View>
       {isGoing ? (
         <DeleteButton
-          onPress={(e) => handleUnattendingPress(e, item)}
+          onPress={
+            !isDateOlderBy4Hours(mongoDBDate)
+              ? (e) => handleUnattendingPress(e, item)
+              : null // Set onPress to undefined if the condition is not met
+          }
           label="unattend"
-          styling={{ marginHorizontal: 0, marginTop: 5, marginBottom: 10 }}
+          styling={{
+            marginHorizontal: 0,
+            marginTop: 5,
+            marginBottom: 10,
+            color: isDateOlderBy4Hours(mongoDBDate) ? "grey" : "",
+          }}
         ></DeleteButton>
       ) : (
         <CreateButton
-          onPress={(e) => handleAttendingPress(e, item)}
+          onPress={
+            !isDateOlderBy4Hours(mongoDBDate)
+              ? (e) => handleAttendingPress(e, item)
+              : null // Set onPress to undefined if the condition is not met
+          }
           label="attend"
-          styling={{ marginHorizontal: 0, marginTop: 5, marginBottom: 10 }}
+          styling={{
+            marginHorizontal: 0,
+            marginTop: 5,
+            marginBottom: 10,
+            backgroundColor: isDateOlderBy4Hours(mongoDBDate)
+              ? Colors.placeholder
+              : "#008080",
+          }}
         ></CreateButton>
       )}
 
@@ -480,6 +512,9 @@ const EventCard = ({
         style={{
           ...styles.card,
           borderColor: item.home_away === "Home" ? "#99cc33" : "#ff9966",
+          backgroundColor: isDateOlderBy4Hours(mongoDBDate)
+            ? Colors.placeholder
+            : "white",
         }}
       >
         <View style={styles.dateTime}>
@@ -678,8 +713,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   opponent: {
-    flexDirection: "row",
+    flexDirection: "column",
     paddingBottom: 10,
+
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    textAlign: "center",
   },
   dateTime: {
     color: "black",

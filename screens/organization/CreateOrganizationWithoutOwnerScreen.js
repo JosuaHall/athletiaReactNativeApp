@@ -218,7 +218,6 @@ const styles = StyleSheet.create({
   },
   logo: {
     flex: 1,
-    textAlign: "center",
   },
   name: {
     flex: 1,

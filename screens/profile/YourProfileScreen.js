@@ -1,4 +1,3 @@
-// YourProfileScreen.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -13,9 +12,11 @@ import { useTheme } from "@react-navigation/native";
 import Colors from "../../config/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { loadTeamAdminRequests } from "./../../actions/teamActions";
+import {
+  loadTeamAdminRequests,
+  getOrganizationAndTeam,
+} from "../../actions/teamActions";
 import LoadingSpinnerStackScreen from "./../LoadingSpinnerStackScreen";
-import { getOrganizationAndTeam } from "../../actions/organizationActions";
 
 const YourProfileScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -30,22 +31,11 @@ const YourProfileScreen = ({ navigation }) => {
   const isLoading = useSelector((state) => state.team.isLoadingRequests);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [acceptedRequests, setAcceptedRequests] = useState([]);
-  //useSelector = teamAdminRequests
-  //useState = pendingList
-  //useState = acceptedList
 
-  //useEffect []
-  /* load team admin requests */
   useEffect(() => {
     dispatch(loadTeamAdminRequests(user._id));
-  }, []);
+  }, [onRequestAcceptedOrDenied]);
 
-  //useEffect [teamAdminRequests]
-  //filter user_recipient == userid && status == 1
-  /* setState pending
-  //filter user_recipient == userid && status == 2
-  /* setState accepted
-  */
   useEffect(() => {
     if (requests.length !== 0) {
       const pendingRequests = requests.filter(
@@ -59,40 +49,77 @@ const YourProfileScreen = ({ navigation }) => {
     }
   }, [requests]);
 
-  useEffect(() => {
-    dispatch(loadTeamAdminRequests(user._id));
-  }, [onRequestAcceptedOrDenied]);
-
   const teamSelected = (organizationId, teamId) => {
     dispatch(getOrganizationAndTeam(organizationId, teamId));
     navigation.navigate("TeamManagement");
+  };
+
+  const renderProfileImage = () => {
+    if (user.profileImg) {
+      return (
+        <Image
+          style={styles.profileImg}
+          source={{
+            uri: `${user.profileImg}`,
+          }}
+        />
+      );
+    }
+    return (
+      <View style={styles.profileImg}>
+        <Ionicons name="ios-person" size={24} color={colors.text} />
+      </View>
+    );
+  };
+
+  const renderAcceptedRequests = () => {
+    if (acceptedRequests.length !== 0) {
+      return acceptedRequests.map((team) => (
+        <TouchableOpacity
+          key={team._id}
+          onPress={() => teamSelected(team.organization._id, team.team)}
+          style={{ ...styles.organizationCard, backgroundColor: colors.card }}
+        >
+          <Image
+            style={styles.logo}
+            source={{
+              uri: `${team.organization.logo}`,
+            }}
+          />
+          <View style={styles.headerLabel}>
+            <Text style={{ ...styles.orgName, color: colors.text }}>
+              {team.organization.name}
+            </Text>
+            <Text style={{ ...styles.teamName, color: colors.text }}>
+              {team.sport}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      ));
+    }
+
+    return (
+      <Text style={{ color: colors.text, textAlign: "center" }}>
+        You are currently not an Admin of a Team. Check your notifications on
+        the top left for any invites.
+      </Text>
+    );
   };
 
   return (
     <ScrollView>
       {!isLoading ? (
         <View style={styles.container}>
-          <View style={{ backgroundColor: colors.card, ...styles.profileCard }}>
-            {user.profileImg ? (
-              <Image
-                style={styles.profileImg}
-                source={{
-                  uri: `${user.profileImg}`,
-                }}
-              />
-            ) : (
-              <View style={styles.profileImg}>
-                <Ionicons name="ios-person" size={24} color={colors.text} />
-              </View>
-            )}
+          <View style={{ ...styles.profileCard, backgroundColor: colors.card }}>
+            {renderProfileImage()}
             <View style={{}}>
-              <Text style={{ color: colors.text, ...styles.name }}>
+              <Text style={{ ...styles.name, color: colors.text }}>
                 {`@${user.name}`}
               </Text>
               <Text
                 style={{
-                  color: colors.text,
                   ...styles.name,
+                  color: colors.text,
                   fontWeight: "normal",
                 }}
               >
@@ -100,49 +127,13 @@ const YourProfileScreen = ({ navigation }) => {
               </Text>
             </View>
           </View>
-          <Text style={{ color: colors.text, ...styles.header }}>
+          <Text style={{ ...styles.header, color: colors.text }}>
             Manage Your Team(s):
           </Text>
-          {acceptedRequests.length !== 0 ? (
-            acceptedRequests.map((team) => (
-              <TouchableOpacity
-                key={team._id}
-                onPress={() => teamSelected(team.organization._id, team.team)}
-                style={{
-                  backgroundColor: colors.card,
-                  ...styles.organizationCard,
-                }}
-              >
-                <Image
-                  style={styles.logo}
-                  source={{
-                    uri: `${team.organization.logo}`,
-                  }}
-                />
-                <View style={styles.headerLabel}>
-                  <Text style={{ color: colors.text, ...styles.orgName }}>
-                    {team.organization.name}
-                  </Text>
-                  <Text style={{ color: colors.text, ...styles.teamName }}>
-                    {team.sport}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text
-              style={{
-                color: colors.text,
-                textAlign: "center",
-              }}
-            >
-              You are currently not an Admin of a Team. Check your notifications
-              on the top left for any invites.
-            </Text>
-          )}
+          {renderAcceptedRequests()}
         </View>
       ) : (
-        <LoadingSpinnerStackScreen></LoadingSpinnerStackScreen>
+        <LoadingSpinnerStackScreen />
       )}
     </ScrollView>
   );
@@ -188,7 +179,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileImg: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 50,
