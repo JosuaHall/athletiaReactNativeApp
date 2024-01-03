@@ -29,6 +29,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { getOrganizationHome } from "../../actions/organizationActions";
 import { setActiveEventIndex } from "../../actions/eventActions";
 import { triggerScrollToLatestEvent } from "./../../actions/organizationActions";
+import { resetOpenedWithNotification } from "../../actions/authActions";
 
 const HomeScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -46,6 +47,9 @@ const HomeScreen = ({ navigation }) => {
   );
   const homeButtonTrigger = useSelector(
     (state) => state.organization.homeButton
+  );
+  const appOpenedWithNotification = useSelector(
+    (state) => state.auth.appOpenedWithNotification
   );
   // Define the ref for capturing the HomeScreen component
   const homeScreenRef = useRef(null);
@@ -113,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
   //homeSelectedOrg -> has select organization object. However -> need new redux store variable
   //to store the loaded organization from (getOrganization)
   useEffect(() => {
-    if (homeSelectedOrg) dispatch(getOrganizationHome(homeSelectedOrg._id));
+    if (homeSelectedOrg) setSelectedOrg(homeSelectedOrg); //dispatch(getOrganizationHome(homeSelectedOrg._id));
   }, [homeSelectedOrg]); //everytime the selected Org object changed (coming from the database)
 
   /****NEW */
@@ -122,6 +126,30 @@ const HomeScreen = ({ navigation }) => {
   }, [
     upToDateOrgObject /*selected:  the organization loaded from getOrganization*/,
   ]);
+
+  //checks if the app was opened with a pushNotifcation, if the pushNotification was from an event of an organization
+  //that the user follows, it checks if this organization is currently rendered.
+  //if the user follows the organization but this organization is not rendered, it changes the organization rendered.
+  //any other case: it just resets the appOpenedWithNanigation redux state (which holds information of the notification that the app was opened with)
+  //a notification gets displayed to the user 24hours before an event of the organizations that the user follows
+  useEffect(() => {
+    // Reset the opened notification regardless of conditions
+    if (appOpenedWithNotification) {
+      if (
+        organizations_followed !== undefined &&
+        organizations_followed.length !== 0
+      ) {
+        const matchingOrganization = organizations_followed.find(
+          (org) => org._id === appOpenedWithNotification.orgid
+        );
+
+        if (matchingOrganization) {
+          setSelectedOrg(matchingOrganization);
+        }
+      }
+      dispatch(resetOpenedWithNotification());
+    }
+  }, [appOpenedWithNotification]);
 
   useEffect(() => {
     if (previewImage) {

@@ -15,6 +15,7 @@ const OrganizationHeader = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const org = useSelector((state) => state.organization.foundOrg);
+  const all_teams = useSelector((state) => state.organization.foundOrg.teams);
   const orgFollowedList = useSelector(
     (state) => state.auth.user.organizations_followed
   );
@@ -59,12 +60,31 @@ const OrganizationHeader = () => {
     if (orgid === org._id) dispatch({ type: RESET_FILTERED_HOME_ORGANIZATION });
   };
 
+  const getAllEvents = () => {
+    if (all_teams.length !== 0) {
+      const all_events = [].concat(
+        ...all_teams.map((team) =>
+          team.events
+            .filter((event) => new Date(event.date_time) > Date.now())
+            .map((event) => ({
+              ...event,
+              sport: team.sport,
+              key: event._id,
+            }))
+        )
+      );
+      return all_events;
+    }
+    return [];
+  };
+
   const onFollow = () => {
     //follow this organization
     const userid = user._id;
     const orgid = org._id;
+    const allEvents = getAllEvents();
     setFollowing(true);
-    dispatch(followOrganization(userid, orgid));
+    dispatch(followOrganization(userid, orgid, allEvents));
   };
 
   return (

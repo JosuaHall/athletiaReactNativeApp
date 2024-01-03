@@ -48,9 +48,10 @@
     "react-native-web": "~0.18.9",
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",
-    "redux-thunk": "^2.4.2"
+    "redux-thunk": "^2.4.2",
+    "expo-constants": "~14.0.2"
   },
-  "proxy": "https://athletia-app-api.onrender.com",
+  "proxy": "http://192.168.0.16:3000",
   "private": true,
   "devDependencies": {
     "react-test-renderer": "^18.1.0"
@@ -60,7 +61,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.josuahall.athletiaapp",
-      "buildNumber": "2"
+      "buildNumber": "3"
     }
   }
 }

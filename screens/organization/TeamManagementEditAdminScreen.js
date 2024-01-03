@@ -35,11 +35,11 @@ const TeamManagementEditAdminScreen = ({ navigation }) => {
           ...styles.cardContainer,
         }}
       >
-        {request.user_recipient.profileImg ? (
+        {request.user_recipient?.profileImg ? (
           <Image
             style={styles.profileImg}
             source={{
-              uri: `${request.user_recipient.profileImg}`,
+              uri: `${request.user_recipient?.profileImg}`,
             }}
           />
         ) : (
@@ -60,7 +60,7 @@ const TeamManagementEditAdminScreen = ({ navigation }) => {
               fontWeight: "bold",
             }}
           >
-            {`@${request.user_recipient.name}`}
+            {`@${request.user_recipient?.name}`}
           </Text>
           <Text
             style={{
@@ -69,7 +69,7 @@ const TeamManagementEditAdminScreen = ({ navigation }) => {
               fontWeight: "normal",
             }}
           >
-            {`${request.user_recipient.firstName} ${request.user_recipient.lastName}`}
+            {`${request.user_recipient?.firstName} ${request.user_recipient?.lastName}`}
           </Text>
         </View>
         {request.status === 1 ? (

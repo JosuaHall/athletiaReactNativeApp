@@ -10,6 +10,7 @@ import {
   SPORTS_LOADED,
   LOAD_TEAM_ADMIN_REQUESTS,
   TEAM_ADMIN_REQUESTS_PROFILE_LOADED,
+  TEAM_ADMIN_REQUESTS_PROFILE_RESETED,
   RESET_TEAM_REDUCER,
   TEAM_LEADERBOARD_LOADED,
   TEAM_LEADERBOARD_LOADING,
@@ -217,4 +218,8 @@ export const getTeamLeaderboard = (orgid, teamid) => (dispatch) => {
     .catch((err) => {
       dispatch({ type: TEAM_LEADERBOARD_LOADED, payload: "" });
     });
+};
+
+export const resetProfileTeams = () => (dispatch) => {
+  dispatch({ type: TEAM_ADMIN_REQUESTS_PROFILE_RESETED });
 };

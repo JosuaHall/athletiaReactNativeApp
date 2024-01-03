@@ -20,13 +20,14 @@ import { setEventFilter } from "../../actions/eventActions";
 const FilterEventsScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+  /*
   const now = new Date();
   const year = now.getFullYear();
   // First day of the year
   const firstDay = new Date(year, 0, 1);
 
   // Last day of the year
-  const lastDay = new Date(year, 11, 31);
+  const lastDay = new Date(year, 11, 31);*/
 
   const currentFilter = useSelector((state) => state.event.filter);
   const [homeAway, setHomeAway] = useState(
@@ -37,12 +38,13 @@ const FilterEventsScreen = ({ navigation }) => {
   const [selectedSports, setSelectedSports] = useState(
     currentFilter ? currentFilter.teams : []
   );
+  /*
   const [startDate, setStartDate] = useState(
     currentFilter ? currentFilter.startDate : firstDay
   );
   const [endDate, setEndDate] = useState(
     currentFilter ? currentFilter.endDate : lastDay
-  );
+  );*/
 
   useEffect(() => {
     dispatch(getSports());
@@ -53,21 +55,22 @@ const FilterEventsScreen = ({ navigation }) => {
     const filter = {
       homeAway,
       teams: selectedSports,
-      startDate,
-      endDate,
+      /*startDate,
+      endDate,*/
     };
 
     dispatch(setEventFilter(filter));
     navigation.navigate("Events");
   };
 
+  /*
   const handleStartDateChange = (date) => {
     setStartDate(date);
   };
 
   const handleEndDateChange = (date) => {
     setEndDate(date);
-  };
+  };*/
 
   const handleSelectSport = (sport) => {
     if (!selectedSports.includes(sport)) {
@@ -97,8 +100,9 @@ const FilterEventsScreen = ({ navigation }) => {
           selectedValue={homeAway}
         />
       </View>
+      {/*
       <Text style={{ color: colors.text, ...styles.header }}>Start Date</Text>
-
+      
       <YearPicker
         onDateTimeSelected={handleStartDateChange}
         defaultDate={startDate}
@@ -108,6 +112,7 @@ const FilterEventsScreen = ({ navigation }) => {
         onDateTimeSelected={handleEndDateChange}
         defaultDate={endDate}
       ></YearPicker>
+  */}
 
       <Text style={{ color: colors.text, ...styles.header }}>Sports</Text>
       <SportList allSports={sports} onSelection={handleSelectSport}></SportList>

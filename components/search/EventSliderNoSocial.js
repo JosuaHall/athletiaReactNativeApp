@@ -13,17 +13,28 @@ const EventSliderNoSocial = ({ navigation }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const sliderWidth = Dimensions.get("window").width;
   const itemWidth = sliderWidth - 100;
+  const currentDate = new Date();
+  const sixMonthsAgo = new Date(currentDate);
+  sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
+  const sixMonthsForward = new Date(currentDate);
+  sixMonthsForward.setMonth(currentDate.getMonth() + 6);
 
   useEffect(() => {
     if (all_teams.length !== 0) {
       const all_events = []
         .concat(
           ...all_teams.map((team) =>
-            team.events.map((event) => ({
-              ...event,
-              sport: team.sport,
-              key: event._id,
-            }))
+            team.events
+              .filter(
+                (event) =>
+                  new Date(event.date_time) >= sixMonthsAgo &&
+                  new Date(event.date_time) <= sixMonthsForward
+              )
+              .map((event) => ({
+                ...event,
+                sport: team.sport,
+                key: event._id,
+              }))
           )
         )
         .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));

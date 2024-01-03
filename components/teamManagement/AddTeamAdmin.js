@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,8 +8,6 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 const AddTeamAdmin = ({ navigation }) => {
@@ -21,7 +19,8 @@ const AddTeamAdmin = ({ navigation }) => {
     )
   );
   const hasCurrentUserAsAdmin = team_admin_requests.some(
-    (request) => request.user_recipient._id === userId
+    (request) =>
+      request.user_recipient && request.user_recipient?._id === userId
   );
   const [teamAdminsInfoVisible, setTeamAdminsInfoVisible] = useState(false);
 

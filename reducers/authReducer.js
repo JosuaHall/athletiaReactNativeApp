@@ -25,6 +25,9 @@ import {
   API_KEY_LOADED,
   SOCIALS_UPDATED,
   RESET_UPDATED_SOCIALS,
+  ACCOUNT_SUCCESSFUL_DELETED,
+  SET_NOTIFICATION_DATA,
+  RESET_NOTIFICATION_DATA,
 } from "../actions/types";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -44,6 +47,8 @@ const initialState = {
   passwordResetToken: "",
   apiKey: "",
   updatedSocials: [],
+  isAccDeleted: "",
+  appOpenedWithPushNotification: "",
 };
 
 export default function (state = initialState, action) {
@@ -94,6 +99,17 @@ export default function (state = initialState, action) {
         userloaded: false,
         isAuthenticated: false,
         isLoading: false,
+      };
+    case ACCOUNT_SUCCESSFUL_DELETED:
+      AsyncStorage.removeItem("token");
+      return {
+        ...state,
+        token: null,
+        user: null,
+        userloaded: false,
+        isAuthenticated: false,
+        isLoading: false,
+        isAccDeleted: action.payload,
       };
     case RESET_PASSWORD_LINK_SENT:
       return {
@@ -189,6 +205,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         updatedSocials: [],
+      };
+    case SET_NOTIFICATION_DATA:
+      return {
+        ...state,
+        appOpenedWithPushNotification: action.payload,
+      };
+    case RESET_NOTIFICATION_DATA:
+      return {
+        ...state,
+        appOpenedWithPushNotification: "",
       };
     default:
       return state;

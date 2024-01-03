@@ -138,14 +138,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   logo: {
-    flex: 1,
-
     justifyContent: "flex-start",
     alignItems: "flex-start",
     borderRadius: 35,
     width: 70,
     height: 70,
     resizeMode: "contain",
+    marginRight: 10,
   },
   orgName: {
     flex: 2.5,

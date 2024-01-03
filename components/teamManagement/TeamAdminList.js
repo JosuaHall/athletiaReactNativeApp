@@ -18,7 +18,7 @@ const TeamAdminList = ({ navigation }) => {
     )
   );
   const hasCurrentUserAsAdmin = team_admin_requests.some(
-    (request) => request.user_recipient._id === userId
+    (request) => request.user_recipient?._id === userId
   );
 
   const editAdmin = (e, request) => {
@@ -51,11 +51,11 @@ const TeamAdminList = ({ navigation }) => {
                 ...styles.cardContainer,
               }}
             >
-              {request.user_recipient.profileImg ? (
+              {request.user_recipient && request.user_recipient?.profileImg ? (
                 <Image
                   style={styles.profileImg}
                   source={{
-                    uri: `${request.user_recipient.profileImg}`,
+                    uri: `${request.user_recipient?.profileImg}`,
                   }}
                 />
               ) : (
@@ -69,8 +69,30 @@ const TeamAdminList = ({ navigation }) => {
                   ...styles.adminUsername,
                 }}
               >
-                {request.user_recipient._id === userId ? (
-                  <Text>You</Text>
+                {request.user_recipient ? (
+                  request.user_recipient?._id === userId ? (
+                    <Text>You</Text>
+                  ) : (
+                    <View
+                      style={{
+                        ...styles.adminUsername,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text style={{ color: colors.text, ...styles.userName }}>
+                        {`@${request.user_recipient?.name}`}
+                      </Text>
+                      <Text
+                        style={{
+                          color: colors.text,
+                          ...styles.userName,
+                          fontWeight: "normal",
+                        }}
+                      >
+                        {`${request.user_recipient?.firstName} ${request.user_recipient?.lastName}`}
+                      </Text>
+                    </View>
+                  )
                 ) : (
                   <View
                     style={{
@@ -78,9 +100,6 @@ const TeamAdminList = ({ navigation }) => {
                       justifyContent: "center",
                     }}
                   >
-                    <Text style={{ color: colors.text, ...styles.userName }}>
-                      {`@${request.user_recipient.name}`}
-                    </Text>
                     <Text
                       style={{
                         color: colors.text,
@@ -88,7 +107,7 @@ const TeamAdminList = ({ navigation }) => {
                         fontWeight: "normal",
                       }}
                     >
-                      {`${request.user_recipient.firstName} ${request.user_recipient.lastName}`}
+                      Delted Account
                     </Text>
                   </View>
                 )}

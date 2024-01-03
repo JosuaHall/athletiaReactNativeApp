@@ -1,11 +1,15 @@
 // EditProfileScreen.js
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import CreateButton from "../../components/CreateButton";
 import { useSelector, useDispatch } from "react-redux";
 import DeleteButton from "./../../components/DeleteButton";
-import { logout, updateUserPrivacySetting } from "../../actions/authActions";
+import {
+  logout,
+  updateUserPrivacySetting,
+  deleteAccount,
+} from "../../actions/authActions";
 import SquareImagePicker from "./../../components/SquareImagePicker";
 import {
   updateProfilePicture,
@@ -70,6 +74,27 @@ const EditProfileScreen = ({ navigation }) => {
     dispatch(logout());
   };
 
+  const delAccount = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete your account? This action cannot be undone. All your data will be removed from the app.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            // The user confirmed the deletion, dispatch the action
+            dispatch(deleteAccount(user._id));
+          },
+          style: "destructive", // This style will make the text red to indicate a destructive action
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <SquareImagePicker
@@ -106,13 +131,20 @@ const EditProfileScreen = ({ navigation }) => {
       ></CreateButton>
 
       <DeleteButton onPress={logOut} label="Logout"></DeleteButton>
+
+      <DeleteButton
+        onPress={delAccount}
+        label="Delete Account"
+        styling={{ backgroundColor: "transparent" }}
+        textColor={{ color: "#7F0000" }}
+      ></DeleteButton>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: 40,
@@ -145,7 +177,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   disabledButton: {
-    opacity: 0.5, // Adjust the opacity to make the button look disabled
+    opacity: 0.2, // Adjust the opacity to make the button look disabled
   },
 });
 

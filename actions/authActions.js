@@ -2,6 +2,11 @@ import axios from "axios";
 import { returnErrors, clearErrors } from "./errorActions";
 import { proxy } from "../package.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+import {
+  schedulePushNotification,
+  cancelNotificationsForOrganization,
+} from "../config/notificationUtils";
 
 import {
   USER_LOADED,
@@ -30,8 +35,11 @@ import {
   API_KEY_LOADED,
   SOCIALS_UPDATED,
   RESET_UPDATED_SOCIALS,
+  ACCOUNT_SUCCESSFUL_DELETED,
+  SET_NOTIFICATION_DATA,
+  RESET_NOTIFICATION_DATA,
 } from "./types";
-import { resetTeamReducer } from "./teamActions";
+import { resetProfileTeams, resetTeamReducer } from "./teamActions";
 import { resetLeaderboard } from "./organizationActions";
 
 /*Check token & load user
@@ -307,6 +315,7 @@ export const login =
 export const logout = () => (dispatch) => {
   dispatch(resetTeamReducer());
   dispatch(resetLeaderboard());
+  dispatch(resetProfileTeams());
   dispatch({ type: LOGOUT_SUCCESS });
 };
 
@@ -330,7 +339,77 @@ export const tokenAConfig = async (getState) => {
   return config;
 };
 
-export const followOrganization = (userid, orgid) => (dispatch) => {
+// Asynchronous function to set up push notifications for events
+async function setNotificationsForEvents(allEvents, orgid) {
+  for (const event of allEvents) {
+    try {
+      // Attempt to schedule push notification for the event
+      await schedulePushNotification(event, orgid);
+      console.log(`Push notification scheduled for event: ${event._id}`);
+    } catch (error) {
+      // Handle the error as needed
+      console.error(
+        `Error scheduling notification for event ${event._id}:`,
+        error.message
+      );
+
+      // Optionally, you can continue with the next event even if an error occurs
+      // Remove the next line if you want to stop processing on error
+      continue;
+    }
+  }
+}
+
+// Action to set up push notifications for events of followed organizations
+export const setPushNotificationsForEventsOfFollowedOrganizations =
+  (organizations) => async (dispatch) => {
+    try {
+      // Retrieve stored notifications from AsyncStorage
+      const storedNotifications = await getStoredNotifications();
+
+      for (const organization of organizations) {
+        for (const team of organization.teams) {
+          const allEvents = team.events.filter(
+            (event) => new Date(event.date_time) > Date.now()
+          );
+          // Remove notifications for events that no longer exist
+          const orgId = organization._id;
+
+          for (const [key, value] of storedNotifications.entries()) {
+            const [storedOrgId, storedEventId] = key.split("_");
+            if (
+              storedOrgId === orgId &&
+              !allEvents.some((event) => event._id === storedEventId)
+            ) {
+              // Cancel the notification for the deleted event
+              await Notifications.cancelScheduledNotificationAsync(key);
+
+              // Remove the notification from the stored notifications map
+              storedNotifications.delete(key);
+            }
+          }
+          await setNotificationsForEvents(allEvents, organization._id);
+        }
+      }
+      // Additional logic if needed after setting up notifications for all events
+    } catch (error) {
+      // Handle any errors that may occur during the process
+      console.error("Error setting up push notifications:", error.message);
+    }
+  };
+
+// Function to retrieve stored notifications from AsyncStorage
+async function getStoredNotifications() {
+  const storedNotifications = await AsyncStorage.getItem(
+    "scheduledNotifications"
+  );
+  return storedNotifications
+    ? new Map(JSON.parse(storedNotifications))
+    : new Map();
+}
+
+export const followOrganization = (userid, orgid, all_events) => (dispatch) => {
+  //all_events is an array for all upcoming events: need to set notifications for them and also keep track of _id
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -347,6 +426,9 @@ export const followOrganization = (userid, orgid) => (dispatch) => {
     )
     .then((res) => {
       dispatch({ type: TEAM_FOLLOWED, payload: res.data });
+
+      // Set up push notifications asynchronously
+      setNotificationsForEvents(all_events, orgid);
     })
     .catch((err) => {
       console.log(err);
@@ -370,6 +452,9 @@ export const unfollowOrganization = (userid, orgid) => (dispatch) => {
     )
     .then((res) => {
       dispatch({ type: TEAM_UNFOLLOWED, payload: res.data });
+
+      // After successfully unfollowing, cancel notifications for the organization
+      cancelNotificationsForOrganization(orgid);
     })
     .catch((err) => {
       console.log(err);
@@ -484,4 +569,42 @@ export const updateUserAcknowledgement = (userid) => (dispatch) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+// Action to delete the user account
+export const deleteAccount = (userId) => async (dispatch, getState) => {
+  try {
+    // Get the token configuration
+    const tokenConfig = await tokenAConfig(getState);
+    // Make the delete request using the authenticated token
+    const res = await axios.delete(
+      `${proxy}/api/users/delete/${userId}`,
+      tokenConfig
+    );
+
+    console.log(res.data.message);
+
+    // Dispatch the success action
+    dispatch({
+      type: ACCOUNT_SUCCESSFUL_DELETED,
+      payload: res.data,
+    });
+    dispatch(resetProfileTeams());
+  } catch (err) {
+    console.log(err);
+
+    /* Dispatch the failure action
+    dispatch({
+      type: ACCOUNT_DELETION_FAILED,
+      payload: err.response.data, // You can adjust this payload based on your API response format
+    });*/
+  }
+};
+
+export const setNotificationData = (notification) => (dispatch) => {
+  dispatch({ type: "SET_NOTIFICATION_DATA", payload: notification });
+};
+
+export const resetOpenedWithNotification = () => (dispatch) => {
+  dispatch({ type: "RESET_NOTIFICATION_DATA" });
 };

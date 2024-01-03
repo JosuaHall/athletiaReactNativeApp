@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,52 +10,62 @@ import {
 import Colors from "../../config/Colors";
 import Icon from "../../assets/icons/athletia_logo_white.png";
 import Icon2 from "../../assets/icons/HomeScreenExampleIphone.png";
-
 import { useTheme } from "@react-navigation/native";
 
 const InfoScreen = ({ navigation }) => {
   const { colors } = useTheme();
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  const handleImagesLoaded = () => {
+    // Callback function to be executed when images are loaded
+    setImagesLoaded(true);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.containerDescription}>
-        <View style={{ color: colors.text, ...styles.brandName }}>
-          <Image style={styles.athletiaLogo} source={Icon} />
-        </View>
-        <Text style={{ ...styles.description }}>
-          See who's going to sports events!{" "}
-        </Text>
-        <Text style={{ ...styles.description }}>
-          Find out which friends are attending the upcoming football game and
-          let others know which games you're going to.
-        </Text>
+      {imagesLoaded && (
+        <View style={styles.containerDescription}>
+          <View style={{ color: colors.text, ...styles.brandName }}>
+            <Image style={styles.athletiaLogo} source={Icon} />
+          </View>
+          <Text style={{ ...styles.description }}>
+            See who's going to sports events!{" "}
+          </Text>
+          <Text style={{ ...styles.description }}>
+            Find out which friends are attending the upcoming football game and
+            let others know which games you're going to.
+          </Text>
 
-        <View style={styles.buttonsContainer}>
-          <View style={{ color: colors.text, ...styles.button }}>
-            <Button
-              title="Login"
-              onPress={() => navigation.navigate("Login")}
-            />
-          </View>
-          <View style={{ color: colors.text, ...styles.button }}>
-            <Button
-              title="Register"
-              onPress={() => navigation.navigate("Register")}
-            />
+          <View style={styles.buttonsContainer}>
+            <View style={{ color: colors.text, ...styles.button }}>
+              <Button
+                title="Login"
+                onPress={() => navigation.navigate("Login")}
+              />
+            </View>
+            <View style={{ color: colors.text, ...styles.button }}>
+              <Button
+                title="Register"
+                onPress={() => navigation.navigate("Register")}
+              />
+            </View>
           </View>
         </View>
-      </View>
+      )}
 
       <View style={styles.containerImage}>
-        <Text style={styles.imageTitle}>
-          "Sam, Alex and Emma are all going to see Thursday's football game of
-          your club"
-        </Text>
-        <View
-          style={{
-            ...styles.demoContainer,
-          }}
-        >
-          <Image style={styles.demoScreen} source={Icon2} />
+        {imagesLoaded && (
+          <Text style={styles.imageTitle}>
+            "Sam, Alex and Emma are all going to see Thursday's football game of
+            your club"
+          </Text>
+        )}
+        <View style={{ ...styles.demoContainer }}>
+          <Image
+            style={styles.demoScreen}
+            source={Icon2}
+            onLoad={handleImagesLoaded}
+          />
         </View>
       </View>
     </View>
@@ -132,6 +142,12 @@ const styles = StyleSheet.create({
     flex: 2,
     resizeMode: "contain",
     paddingTop: 550,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.blue, // Semi-transparent white background
   },
   /**************************/
 });

@@ -14,6 +14,7 @@ import {
   LOAD_TEAM_ADMIN_REQUESTS,
   RESET_TEAM_ADMIN_REQUEST_LIST,
   TEAM_ADMIN_REQUESTS_PROFILE_LOADED,
+  TEAM_ADMIN_REQUESTS_PROFILE_RESETED,
   RESET_TEAM_REDUCER,
   TEAM_LEADERBOARD_LOADED,
   TEAM_LEADERBOARD_DELETED,
@@ -98,6 +99,14 @@ export default function (state = initialState, action) {
         isLoadingRequests: false,
         adminRequestSent: false,
         team_admin_requests_profile: action.payload,
+      };
+    case TEAM_ADMIN_REQUESTS_PROFILE_RESETED:
+      return {
+        ...state,
+        isLoading: false,
+        isLoadingRequests: false,
+        adminRequestSent: false,
+        team_admin_requests_profile: [],
       };
     case SPORTS_LOADED:
       return {

@@ -97,7 +97,7 @@ const OrganizationTeamsScreen = ({ navigation }) => {
               </Text>
             </View>
           </TouchableWithoutFeedback>
-          {selectedOrg?.teams.length !== 0 ? (
+          {selectedOrg?.teams?.length !== 0 ? (
             selectedOrg.teams.map((team) => {
               return (
                 <TouchableHighlight

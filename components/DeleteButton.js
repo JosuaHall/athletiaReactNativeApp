@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
-const DeleteButton = ({ onPress, label, styling }) => {
+const DeleteButton = ({ onPress, label, styling, textColor }) => {
   const { colors } = useTheme();
 
   return (
@@ -14,7 +14,7 @@ const DeleteButton = ({ onPress, label, styling }) => {
         ...styling,
       }}
     >
-      <Text style={{ color: "white" }}>{label}</Text>
+      <Text style={{ color: "white", ...textColor }}>{label}</Text>
     </TouchableOpacity>
   );
 };

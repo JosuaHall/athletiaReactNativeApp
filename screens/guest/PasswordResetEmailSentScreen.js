@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import Colors from "./../../config/Colors";
 import InputField from "./../../components/InputField";

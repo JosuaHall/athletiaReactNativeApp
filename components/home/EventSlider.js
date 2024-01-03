@@ -45,6 +45,12 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
   const user_id = useSelector((state) => state.auth.user._id);
   const org_id = useSelector((state) => state.organization.homeOrgRender._id);
   const teams = useSelector((state) => state.organization.homeOrgRender.teams);
+  const currentDate = new Date();
+  const sixMonthsAgo = new Date(currentDate);
+  sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
+
+  const sixMonthsForward = new Date(currentDate);
+  sixMonthsForward.setMonth(currentDate.getMonth() + 6);
   const pointsUpdated = useSelector(
     (state) => state.organization.pointsUpdated
   );
@@ -117,12 +123,8 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
             team.events
               .filter(
                 (event) =>
-                  (!eventFilter.startDate ||
-                    new Date(event.date_time) >=
-                      new Date(eventFilter.startDate)) &&
-                  (!eventFilter.endDate ||
-                    new Date(event.date_time) <=
-                      new Date(eventFilter.endDate)) &&
+                  new Date(event.date_time) >= sixMonthsAgo &&
+                  new Date(event.date_time) <= sixMonthsForward &&
                   (!eventFilter.homeAway ||
                     eventFilter.homeAway.includes(event.home_away))
               )
@@ -148,12 +150,18 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
       const all_events = []
         .concat(
           ...teams.map((team) =>
-            team.events.map((event) => ({
-              ...event,
-              sport: team.sport,
-              key: event._id,
-              teamid: team._id,
-            }))
+            team.events
+              .filter(
+                (event) =>
+                  new Date(event.date_time) >= sixMonthsAgo &&
+                  new Date(event.date_time) <= sixMonthsForward
+              )
+              .map((event) => ({
+                ...event,
+                sport: team.sport,
+                key: event._id,
+                teamid: team._id,
+              }))
           )
         )
         .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));

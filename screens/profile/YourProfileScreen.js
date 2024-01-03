@@ -12,10 +12,8 @@ import { useTheme } from "@react-navigation/native";
 import Colors from "../../config/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loadTeamAdminRequests,
-  getOrganizationAndTeam,
-} from "../../actions/teamActions";
+import { loadTeamAdminRequests } from "../../actions/teamActions";
+import { getOrganizationAndTeam } from "../../actions/organizationActions";
 import LoadingSpinnerStackScreen from "./../LoadingSpinnerStackScreen";
 
 const YourProfileScreen = ({ navigation }) => {
@@ -37,12 +35,12 @@ const YourProfileScreen = ({ navigation }) => {
   }, [onRequestAcceptedOrDenied]);
 
   useEffect(() => {
-    if (requests.length !== 0) {
-      const pendingRequests = requests.filter(
+    if (requests?.length !== 0) {
+      const pendingRequests = requests?.filter(
         (request) => request.status === 1
       );
       setPendingRequests(pendingRequests);
-      const acceptedRequests = requests.filter(
+      const acceptedRequests = requests?.filter(
         (request) => request.status === 2
       );
       setAcceptedRequests(acceptedRequests);

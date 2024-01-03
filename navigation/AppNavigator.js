@@ -562,15 +562,6 @@ const YourProfileStackScreen = () => {
   );
 
   const userId = useSelector((state) => state.auth.user._id);
-  const team_admin_requests = useSelector((state) =>
-    state.team.team_admin_requests_list.filter(
-      (request) => !request.hasOwnProperty("isHeadAdmin")
-    )
-  );
-  const hasCurrentUserAsAdmin = team_admin_requests.some(
-    (request) => request.user_recipient._id === userId
-  );
-  const user = useSelector((state) => state.auth.user);
   const updatedSocials = useSelector((state) => state.auth.updatedSocials);
 
   useEffect(() => {
