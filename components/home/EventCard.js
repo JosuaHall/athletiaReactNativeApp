@@ -36,9 +36,9 @@ const EventCard = ({
   const dispatch = useDispatch();
   const userid = useSelector((state) => state.auth.user._id);
   const orgLocation = useSelector(
-    (state) => state.organization.homeOrgRender.location
+    (state) => state.organization.homeSelectedOrg.location
   );
-  const orgid = useSelector((state) => state.organization.homeOrgRender._id);
+  const orgid = useSelector((state) => state.organization.homeSelectedOrg._id);
   const user = useSelector((state) => state.auth.user);
   const leaderboards = useSelector(
     (state) => state.organization.allLeaderboards

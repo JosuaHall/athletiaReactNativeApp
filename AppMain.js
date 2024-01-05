@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useColorScheme } from "react-native";
 import * as Linking from "expo-linking";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   NavigationContainer,
   DarkTheme,
@@ -16,6 +16,8 @@ import {
   setPushNotificationsForEventsOfFollowedOrganizations,
 } from "./actions/authActions";
 import * as Notifications from "expo-notifications";
+//import * as Application from "expo-application";
+//import { startTutorial } from "./actions/tutorialActions";
 
 import { verifyEmail, verifyPasswordResetLink } from "./actions/authActions";
 import * as Location from "expo-location";
@@ -36,6 +38,7 @@ const AppMain = () => {
   const url = Linking.useURL();
 
   useEffect(() => {
+    //checkFirstTimeUser();
     dispatch(loadUser());
     requestLocationPermission();
 
@@ -98,6 +101,27 @@ const AppMain = () => {
       console.log("Location permission granted");
     }
   };
+
+  /*const checkFirstTimeUser = async () => {
+    try {
+      // Get the stored first-time user flag
+      const isFirstTimeUser = await AsyncStorage.getItem("firstTimeUser");
+
+      if (isFirstTimeUser === null || isFirstTimeUser === undefined) {
+        // User is a first-time user
+        // Display first-time user information/help messages
+        // ...
+
+        dispatch(startTutorial());
+        // Uncomment the line below to update the first-time user flag
+        // await AsyncStorage.setItem('firstTimeUser', 'true');
+      }
+
+      // Continue with your app initialization logic
+    } catch (error) {
+      console.error("Error checking first-time user:", error.message);
+    }
+  };*/
 
   useEffect(() => {
     // Do something with URL

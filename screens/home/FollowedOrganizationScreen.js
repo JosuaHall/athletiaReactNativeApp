@@ -1,5 +1,5 @@
 // FollowedOrganizationsScreen.js
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -26,8 +26,11 @@ const FollowedOrganizationsScreen = ({ navigation }) => {
 
   const organizationSelected = (organization) => {
     dispatch(setHomeOrganization(organization));
+
+    // Navigation will occur only after the dispatch is successful
     navigation.navigate("Events");
   };
+
   return (
     <ScrollView>
       <View style={styles.container}>

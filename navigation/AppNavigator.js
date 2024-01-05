@@ -935,15 +935,6 @@ const AuthenticatedTabScreen = () => {
             <Ionicons name="ios-home" size={24} color={color} />
           ),
         }}
-        listeners={({ navigation, route }) => ({
-          tabPress: (e) => {
-            // Check if the pressed tab is the "Home" tab
-            if (route.name === "Home") {
-              // triggerSrollAnimation in HomeScreen.js
-              dispatch(triggerScrollToLatestEvent(true));
-            }
-          },
-        })}
       />
       <AuthenticatedTab.Screen
         name="Search"

@@ -14,6 +14,7 @@ import {
   Image,
   Button,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { captureRef, shareAsync } from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
@@ -51,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
   const appOpenedWithNotification = useSelector(
     (state) => state.auth.appOpenedWithNotification
   );
+  const isLoading = useSelector((state) => state.organization.orgIsLoading);
   // Define the ref for capturing the HomeScreen component
   const homeScreenRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -84,14 +86,6 @@ const HomeScreen = ({ navigation }) => {
       });
   };
 
-  useEffect(() => {
-    if (homeButtonTrigger) {
-      scrollTo();
-      // Reset the homeButtonTrigger after it's used
-      dispatch(triggerScrollToLatestEvent(false));
-    }
-  }, [homeButtonTrigger]);
-
   //checks if user follows any organizations
   useEffect(() => {
     if (organizations_followed !== undefined) {
@@ -117,12 +111,13 @@ const HomeScreen = ({ navigation }) => {
   //homeSelectedOrg -> has select organization object. However -> need new redux store variable
   //to store the loaded organization from (getOrganization)
   useEffect(() => {
-    if (homeSelectedOrg) setSelectedOrg(homeSelectedOrg); //dispatch(getOrganizationHome(homeSelectedOrg._id));
+    if (homeSelectedOrg) dispatch(getOrganizationHome(homeSelectedOrg._id));
   }, [homeSelectedOrg]); //everytime the selected Org object changed (coming from the database)
 
   /****NEW */
   useEffect(() => {
     setSelectedOrg(upToDateOrgObject); //setSelectedOrg(selected) set component state of selected Object
+    scrollTo();
   }, [
     upToDateOrgObject /*selected:  the organization loaded from getOrganization*/,
   ]);
@@ -131,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
   //that the user follows, it checks if this organization is currently rendered.
   //if the user follows the organization but this organization is not rendered, it changes the organization rendered.
   //any other case: it just resets the appOpenedWithNanigation redux state (which holds information of the notification that the app was opened with)
-  //a notification gets displayed to the user 24hours before an event of the organizations that the user follows
+  //a notification gets displayed to the user 24hours before an event of the organizations that the user
   useEffect(() => {
     // Reset the opened notification regardless of conditions
     if (appOpenedWithNotification) {
@@ -180,18 +175,22 @@ const HomeScreen = ({ navigation }) => {
   const scrollTo = () => {
     // Trigger the scrollToItem function from the parent component
     if (eventSliderRef.current) {
-      eventSliderRef.current.scrollToItem(); // Replace 2 with the desired index
+      eventSliderRef.current.scrollToItem();
     }
   };
 
-  useEffect(() => {
-    const unsubscribeFocus = navigation.addListener("focus", () => {
-      // Scroll to the last item when the "Home" tab is focused
-      scrollTo();
-    });
+  useFocusEffect(() => {
+    // Perform actions on initial focus
 
-    return unsubscribeFocus;
-  }, [navigation]);
+    if (selectedOrg) {
+      scrollTo();
+    }
+
+    // Clean up the effect when the component unmounts
+    return () => {
+      // Your cleanup code here...
+    };
+  });
 
   return (
     <ScrollView
@@ -220,6 +219,10 @@ const HomeScreen = ({ navigation }) => {
                 You are currently not following any Organizations!
               </Text>
             </View>
+          ) : isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={colors.text} />
+            </View>
           ) : (
             <Fragment>
               <OrganizationHeaderHome
@@ -244,11 +247,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 5,
+    flexGrow: 1,
   },
   noFollowedOrgLabel: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "50%",
   },
   previewContainer: {
     flex: 1,
@@ -266,6 +269,11 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     padding: 50, // Add padding of 50 to the preview image
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

@@ -36,7 +36,7 @@ import {
 } from "../../actions/organizationActions";
 import { Ionicons } from "@expo/vector-icons";
 
-const EventSlider = ({ navigation, route, onShare }, ref) => {
+const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
 
@@ -45,9 +45,10 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
   const user_id = useSelector((state) => state.auth.user._id);
   const org_id = useSelector((state) => state.organization.homeOrgRender._id);
   const teams = useSelector((state) => state.organization.homeOrgRender.teams);
+  const isLoading = useSelector((state) => state.organization.orgIsLoading);
   const currentDate = new Date();
   const sixMonthsAgo = new Date(currentDate);
-  sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
+  sixMonthsAgo.setMonth(currentDate.getMonth() - 3);
 
   const sixMonthsForward = new Date(currentDate);
   sixMonthsForward.setMonth(currentDate.getMonth() + 6);
@@ -55,7 +56,7 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
     (state) => state.organization.pointsUpdated
   );
   const [data, setData] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState();
 
   const sliderWidth = Dimensions.get("window").width;
   const itemWidth = sliderWidth - 100;
@@ -74,6 +75,24 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
     (state) => state.organization.orgLeaderboard
   );
   const teamLeaderboard = useSelector((state) => state.team.teamLeaderboard);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
+
+  const handleLayoutReady = () => {
+    // This function is called when the layout is ready
+    setIsLayoutReady(true);
+
+    // Set the initial item after the layout is ready
+    if (carouselRef.current) {
+      const currentDate = new Date();
+      const all_events = data;
+      const index = all_events.findIndex(
+        (event) => new Date(event.date_time) >= currentDate
+      );
+      const lastElementIndex = all_events.length - 1;
+      const idx = index >= 0 ? index : lastElementIndex;
+      carouselRef.current.snapToItem(idx);
+    }
+  };
 
   useImperativeHandle(ref, () => ({
     scrollToItem: () => {
@@ -102,11 +121,13 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
 
   // Set the initial data
   useEffect(() => {
-    const processedEvents = processEvents(teams, eventFilter);
-    setData(processedEvents.data);
-    setActiveIndex(processedEvents.activeIndex);
-    dispatch(setActiveEventIndex(processedEvents.activeIndex));
-  }, [teams, eventFilter]);
+    if (organization) {
+      const processedEvents = processEvents(teams, eventFilter);
+      setData(processedEvents.data);
+      setActiveIndex(processedEvents.activeIndex);
+      dispatch(setActiveEventIndex(processedEvents.activeIndex));
+    }
+  }, [teams, eventFilter, organization]);
 
   //get the events that need to be displayed
   const processEvents = (teams, eventFilter) => {
@@ -143,9 +164,10 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
         (event) => new Date(event.date_time) >= currentDate
       );
       const lastElementIndex = all_events.length - 1;
+
       const activeIndex = index >= 0 ? index : lastElementIndex;
 
-      return { data: all_events, activeIndex };
+      return { data: all_events.slice(activeIndex - 3), activeIndex };
     } else if (teams) {
       const all_events = []
         .concat(
@@ -170,10 +192,10 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
       const index = all_events.findIndex(
         (event) => new Date(event.date_time) > currentDate
       );
+      const lastElementIndex = all_events.length - 1;
+      const activeIndex = index >= 0 ? index : lastElementIndex;
 
-      const activeIndex = index >= 0 ? index : 0;
-
-      return { data: all_events, activeIndex };
+      return { data: all_events.slice(activeIndex - 3), activeIndex };
     }
 
     return { data: [], activeIndex: 0 };
@@ -212,9 +234,9 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} onLayout={handleLayoutReady}>
       {teams ? (
-        teams.length !== 0 && data.length !== 0 ? (
+        teams.length !== 0 && data && data.length !== 0 ? (
           <Carousel
             data={data} //all events
             ref={carouselRef}
@@ -232,7 +254,7 @@ const EventSlider = ({ navigation, route, onShare }, ref) => {
             onSnapToItem={(index) => setActiveIndex(index)}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
-            firstItem={activeIndex}
+            firstItem={isLayoutReady ? activeIndex : 0}
           />
         ) : (
           <View

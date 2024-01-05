@@ -4,6 +4,7 @@ import authReducer from "./authReducer";
 import organizationReducer from "./organizationReducer";
 import teamReducer from "./teamReducer";
 import eventReducer from "./eventReducer";
+import tutorialReducer from "./tutorialReducer";
 
 export default combineReducers({
   error: errorReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
   organization: organizationReducer,
   team: teamReducer,
   event: eventReducer,
+  tutorial: tutorialReducer,
 });
