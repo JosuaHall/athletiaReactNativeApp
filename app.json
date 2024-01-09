@@ -43,7 +43,7 @@
         "NSPhotoLibraryAddUsageDescription": "Allow Athletia to save photos."
       },
       "bundleIdentifier": "com.josuahall.athletiaapp",
-      "buildNumber": "3"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {

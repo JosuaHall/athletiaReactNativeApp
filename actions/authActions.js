@@ -36,6 +36,7 @@ import {
   SOCIALS_UPDATED,
   RESET_UPDATED_SOCIALS,
   ACCOUNT_SUCCESSFUL_DELETED,
+  PASSWORD_RESET_SUCCESS_FLAG_RESETTED,
   SET_NOTIFICATION_DATA,
   RESET_NOTIFICATION_DATA,
 } from "./types";
@@ -187,17 +188,17 @@ export const verifyEmail =
   };
 
 export const verifyPasswordResetLink =
-  ({ token }) =>
+  ({ verificationCode }) =>
   (dispatch) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-
+    console.log(verificationCode);
     axios
       .get(`${proxy}/api/users/validate/password/reset/link`, {
-        params: { token },
+        params: { code: verificationCode },
         ...config,
       })
       .then((res) => {
@@ -258,8 +259,11 @@ export const submitNewPassword =
         "Content-Type": "application/json",
       },
     };
+    if (passwordResetToken) {
+      config.headers["x-auth-token"] = passwordResetToken;
+    }
 
-    const body = JSON.stringify({ passwordResetToken, password });
+    const body = JSON.stringify({ password });
 
     axios
       .post(`${proxy}/api/users/reset/password`, body, config)
@@ -607,4 +611,8 @@ export const setNotificationData = (notification) => (dispatch) => {
 
 export const resetOpenedWithNotification = () => (dispatch) => {
   dispatch({ type: "RESET_NOTIFICATION_DATA" });
+};
+
+export const resetPasswordResetSuccess = () => (dispatch) => {
+  dispatch({ type: "PASSWORD_RESET_SUCCESS_FLAG_RESETTED" });
 };

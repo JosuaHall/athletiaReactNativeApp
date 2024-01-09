@@ -570,7 +570,7 @@ const EventCard = ({
             <Ionicons name="ios-share-outline" size={30} color="grey" />
           </TouchableOpacity>
         </View>
-        {/* Display the button based on the condition */}
+        {/* Display the button based on the condition 
         {shouldDisplayButton() && !pointsAlreadyClaimed() ? (
           <TouchableOpacity
             onPress={handleClaimPointsDebounced}
@@ -597,7 +597,7 @@ const EventCard = ({
           </TouchableOpacity>
         ) : (
           ""
-        )}
+        )}*/}
       </View>
 
       <View style={styles.amenities}>

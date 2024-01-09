@@ -85,7 +85,7 @@ const AppMain = () => {
     }
     if (path === "api/users/reset/password") {
       const { code } = queryParams;
-      dispatch(verifyPasswordResetLink({ token: code }));
+      dispatch(verifyPasswordResetLink({ verificationCode: code }));
     }
   };
 

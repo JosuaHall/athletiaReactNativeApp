@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -11,10 +11,30 @@ import Colors from "../../config/Colors";
 import Icon from "../../assets/icons/athletia_logo_white.png";
 import Icon2 from "../../assets/icons/HomeScreenExampleIphone.png";
 
+import { resetPasswordResetSuccess } from "../../actions/authActions";
+
 import { useTheme } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
 
 const InfoScreen = ({ navigation }) => {
   const { colors } = useTheme();
+  const dispatch = useDispatch();
+  const [showToast, setShowToast] = useState(false);
+  const passwordResetSuccess = useSelector(
+    (state) => state.auth.passwordResetSuccess
+  );
+
+  useEffect(() => {
+    if (passwordResetSuccess) {
+      // Show the toast for 3 seconds
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        dispatch(resetPasswordResetSuccess());
+      }, 3000);
+    }
+  }, [passwordResetSuccess]);
+
   return (
     <View style={styles.container}>
       <View style={styles.containerDescription}>
@@ -44,6 +64,13 @@ const InfoScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
+
+      {/* Custom Toast */}
+      {showToast && (
+        <View style={styles.toastContainer}>
+          <Text style={styles.toastText}>Password Changed</Text>
+        </View>
+      )}
 
       <View style={styles.containerImage}>
         <Text style={styles.imageTitle}>
@@ -134,6 +161,22 @@ const styles = StyleSheet.create({
     paddingTop: 550,
   },
   /**************************/
+  toastContainer: {
+    position: "absolute",
+    top: "50%",
+    left: 20,
+    right: 20,
+    backgroundColor: "#d7edda",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    elevation: 5,
+  },
+  toastText: {
+    color: "#406f3f",
+    fontSize: 16,
+    textAlign: "center",
+  },
 });
 
 export default InfoScreen;

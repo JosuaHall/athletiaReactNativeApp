@@ -170,7 +170,7 @@ export const getAllOrganizations = (searchTerm) => (dispatch) => {
 };
 
 export const attendEvent = (orgid, teamid, eventid, userid) => (dispatch) => {
-  dispatch({ type: ORGANIZATION_IS_LOADING });
+  //dispatch({ type: ORGANIZATION_IS_LOADING });
   axios
     .put(
       `${proxy}/api/organizations/event/attend/${orgid}/${teamid}/${eventid}/${userid}`
@@ -184,7 +184,7 @@ export const attendEvent = (orgid, teamid, eventid, userid) => (dispatch) => {
 };
 
 export const unattendEvent = (orgid, teamid, eventid, userid) => (dispatch) => {
-  dispatch({ type: ORGANIZATION_IS_LOADING });
+  //dispatch({ type: ORGANIZATION_IS_LOADING });
   axios
     .put(
       `${proxy}/api/organizations/event/unattend/${orgid}/${teamid}/${eventid}/${userid}`

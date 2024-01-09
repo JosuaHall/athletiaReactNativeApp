@@ -28,6 +28,7 @@ import {
   ACCOUNT_SUCCESSFUL_DELETED,
   SET_NOTIFICATION_DATA,
   RESET_NOTIFICATION_DATA,
+  PASSWORD_RESET_SUCCESS_FLAG_RESETTED,
 } from "../actions/types";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,6 +50,7 @@ const initialState = {
   updatedSocials: [],
   isAccDeleted: "",
   appOpenedWithPushNotification: "",
+  passwordResetSuccess: false,
 };
 
 export default function (state = initialState, action) {
@@ -128,6 +130,7 @@ export default function (state = initialState, action) {
         ...state,
         passwordResetToken: "",
         passwordResetLinkSent: false,
+        passwordResetSuccess: true,
       };
     case SUBMIT_NEW_PASSWORD_FAIL:
       return {
@@ -215,6 +218,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         appOpenedWithPushNotification: "",
+      };
+    case PASSWORD_RESET_SUCCESS_FLAG_RESETTED:
+      return {
+        ...state,
+        passwordResetSuccess: false,
       };
     default:
       return state;

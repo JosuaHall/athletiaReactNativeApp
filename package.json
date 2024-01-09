@@ -52,7 +52,7 @@
     "expo-constants": "~14.0.2",
     "expo-application": "~5.0.1"
   },
-  "proxy": "http://192.168.0.16:3000",
+  "proxy": "https://athletia-app-api.onrender.com",
   "private": true,
   "devDependencies": {
     "react-test-renderer": "^18.1.0"
@@ -62,7 +62,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.josuahall.athletiaapp",
-      "buildNumber": "3"
+      "buildNumber": "5"
     }
   }
 }
