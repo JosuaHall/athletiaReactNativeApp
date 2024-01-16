@@ -71,7 +71,7 @@ const TeamAdminList = ({ navigation }) => {
               >
                 {request.user_recipient ? (
                   request.user_recipient?._id === userId ? (
-                    <Text>You</Text>
+                    <Text style={{ color: colors.text }}>You</Text>
                   ) : (
                     <View
                       style={{

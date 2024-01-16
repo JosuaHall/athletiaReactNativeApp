@@ -105,14 +105,14 @@ const styles = StyleSheet.create({
   /*** container Description ***/
   containerDescription: {
     flex: 0.9,
-    paddingTop: 20,
+    paddingTop: 10,
     justifyContent: "flex-start",
     alignItems: "center",
     width: Dimensions.get("window").width - 40,
   },
   athletiaLogo: {
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
   },
   brandName: {
     fontSize: 45,
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     flexWrap: "nowrap",
+    zIndex: 20,
   },
   /******************************/
 

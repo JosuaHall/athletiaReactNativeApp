@@ -60,7 +60,7 @@ const HeadTeamAdmin = ({ navigation }) => {
                 }}
               >
                 {request.user_recipient._id === userId ? (
-                  <Text>You</Text>
+                  <Text style={{ color: colors.text }}>You</Text>
                 ) : (
                   <View
                     style={{ ...styles.userName, justifyContent: "center" }}

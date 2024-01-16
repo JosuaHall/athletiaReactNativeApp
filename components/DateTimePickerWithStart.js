@@ -94,6 +94,7 @@ const DateTimePickerWithStart = ({ onDateTimeSelected, startDateTime }) => {
               color: colors.text,
               width: Dimensions.get("window").width - 20,
             }}
+            itemStyle={{ color: colors.text }}
           >
             {moment.tz.names().map((tz) => (
               <Picker.Item

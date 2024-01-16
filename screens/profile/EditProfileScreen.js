@@ -1,6 +1,6 @@
 // EditProfileScreen.js
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import CreateButton from "../../components/CreateButton";
 import { useSelector, useDispatch } from "react-redux";
@@ -96,7 +96,13 @@ const EditProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        alginItems: "center",
+        justifyContent: "flex-start",
+      }}
+    >
       <SquareImagePicker
         defaultImage={profilePic.uri}
         onImageSelected={handleImageSelected}
@@ -109,7 +115,7 @@ const EditProfileScreen = ({ navigation }) => {
         {user.email}
       </Text>
 
-      <Text style={{ color: colors.text, paddingTop: 20 }}>
+      <Text style={{ color: colors.text, paddingTop: 20, textAlign: "center" }}>
         Profile Visibility:
       </Text>
       <DropDownProfileSetting
@@ -119,7 +125,8 @@ const EditProfileScreen = ({ navigation }) => {
           backgroundColor: colors.background,
           color: colors.text,
           paddingHorizontal: 0,
-          marginHorizontal: 20,
+          marginHorizontal: 0,
+          width: "100%",
         }}
       />
 
@@ -130,25 +137,40 @@ const EditProfileScreen = ({ navigation }) => {
         styling={isButtonDisabled ? styles.disabledButton : null} // Apply disabled styling if isButtonDisabled is true
       ></CreateButton>
 
-      <DeleteButton onPress={logOut} label="Logout"></DeleteButton>
+      <DeleteButton
+        onPress={logOut}
+        styling={{ margin: 0, marginVertical: 20 }}
+        label="Logout"
+      ></DeleteButton>
+
+      <View style={{ marginVertical: 10 }}>
+        <Text style={{ color: "#aaa", textAlign: "center" }}>
+          Your safety and statisfaction are our top priorities. If you have any
+          concerns regarding user safety, or any other issues, please do not
+          hesitate to reach out to us. Contact us at support@athletia.app for
+          assistance and support.
+        </Text>
+      </View>
 
       <DeleteButton
         onPress={delAccount}
         label="Delete Account"
-        styling={{ backgroundColor: "transparent" }}
+        styling={{
+          backgroundColor: "transparent",
+          margin: 0,
+          marginBottom: 30,
+        }}
         textColor={{ color: "#7F0000" }}
       ></DeleteButton>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingHorizontal: 40,
     paddingTop: 20,
+    textAlign: "center",
+    paddingHorizontal: 10,
   },
   header: {
     fontSize: 20,
@@ -157,18 +179,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     textAlign: "center",
   },
-  organizationCard: {
-    flexDirection: "row",
-    borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 150,
-    height: 150,
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: "grey",
-    overflow: "hidden",
-  },
+
   logo: {
     flex: 1,
   },
@@ -178,6 +189,7 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.2, // Adjust the opacity to make the button look disabled
+    margin: 0,
   },
 });
 

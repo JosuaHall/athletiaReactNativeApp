@@ -6,6 +6,7 @@ import InputField from "./../../components/InputField";
 import CreateButton from "./../../components/CreateButton";
 import { useDispatch, useSelector } from "react-redux";
 import { submitNewPassword } from "../../actions/authActions";
+import { Ionicons } from "@expo/vector-icons";
 
 const ResetPasswordScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -16,6 +17,8 @@ const ResetPasswordScreen = ({ navigation }) => {
 
   const [password, setPassword] = useState("");
   const [verifiedPassword, setVerifiedPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showVerifiedPassword, setShowVerifiedPassword] = useState(false);
   const [msg, setMsg] = useState("");
 
   const validatePassword = (password) => {
@@ -50,19 +53,38 @@ const ResetPasswordScreen = ({ navigation }) => {
       <Text style={{ color: "white", ...styles.subtitle }}>
         Please enter your new Password:
       </Text>
-      <InputField
-        placeholder={"New Password"}
-        onInput={setPassword}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <InputField
+          placeholder={"New Password"}
+          onInput={setPassword}
+          secureTextEntry={!showPassword}
+        />
+        <Ionicons
+          name={showPassword ? "eye-off" : "eye"}
+          size={20}
+          color={"black"}
+          style={styles.visibilityIcon}
+          onPress={() => setShowPassword(!showPassword)}
+        />
+      </View>
+
       <Text style={{ color: "white", ...styles.subtitle }}>
         Please verify your new Password:
       </Text>
-      <InputField
-        placeholder={"Validate New Password"}
-        onInput={setVerifiedPassword}
-        secureTextEntry
-      />
+      <View style={styles.passwordContainer}>
+        <InputField
+          placeholder={"Validate New Password"}
+          onInput={setVerifiedPassword}
+          secureTextEntry={!showVerifiedPassword}
+        />
+        <Ionicons
+          name={showVerifiedPassword ? "eye-off" : "eye"}
+          size={20}
+          color={"black"}
+          style={styles.visibilityIcon}
+          onPress={() => setShowVerifiedPassword(!showVerifiedPassword)}
+        />
+      </View>
       {msg !== "" && <Text style={styles.errorText}>{msg}</Text>}
       <CreateButton onPress={handleResetLink} label={"Submit"} />
     </View>
@@ -90,6 +112,15 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     marginBottom: 10,
+  },
+  passwordContainer: {
+    position: "relative",
+    width: "100%",
+  },
+  visibilityIcon: {
+    position: "absolute",
+    right: 15,
+    top: 19,
   },
 });
 

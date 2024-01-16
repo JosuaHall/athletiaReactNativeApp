@@ -11,7 +11,13 @@ import {
 import { useTheme } from "@react-navigation/native";
 import Colors from "../config/Colors";
 
-const InputField = ({ placeholder, onInput, value, styling }) => {
+const InputField = ({
+  placeholder,
+  onInput,
+  value,
+  styling,
+  secureTextEntry,
+}) => {
   const { colors } = useTheme();
 
   const clearInput = () => {
@@ -38,6 +44,7 @@ const InputField = ({ placeholder, onInput, value, styling }) => {
           value={value}
           onBlur={clearInput}
           onChangeText={onInput}
+          secureTextEntry={secureTextEntry ? secureTextEntry : false}
         />
       </View>
     </KeyboardAvoidingView>

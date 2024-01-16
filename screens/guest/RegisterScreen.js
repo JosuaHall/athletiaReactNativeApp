@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../actions/authActions";
 import DropDownUserRole from "../../components/register/DropDownUserRole";
 import DropDownProfileSetting from "../../components/register/DropDownProfileSetting";
+import { Ionicons } from "@expo/vector-icons";
 
 const RegisterScreen = ({ navigation }) => {
   const [selectedUserRole, setSelectedUserRole] = useState(0);
@@ -27,6 +28,7 @@ const RegisterScreen = ({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -219,14 +221,26 @@ const RegisterScreen = ({ navigation }) => {
             </View>
           ) : null}
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={Colors.placeholder}
-            secureTextEntry={true}
-            value={password}
-            onChangeText={setPassword}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor={Colors.placeholder}
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity
+              style={styles.visibilityIcon}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={20}
+                color={Colors.placeholder}
+              />
+            </TouchableOpacity>
+          </View>
           {passwordError ? (
             <View style={{ alignSelf: "left" }}>
               <Text style={{ color: "#FFA500" }}>* {passwordError}</Text>
@@ -310,6 +324,14 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 40,
     borderRadius: 10,
     padding: 10,
+  },
+  passwordContainer: {
+    position: "relative",
+  },
+  visibilityIcon: {
+    position: "absolute",
+    right: 35,
+    top: 39,
   },
 });
 
