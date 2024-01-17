@@ -47,6 +47,7 @@ const EventCard = ({
   const [isGoing, setIsGoing] = useState(false);
   const [loading, setLoading] = useState(false);
   const mongoDBDate = new Date(item.date_time);
+  const currentDate = new Date();
 
   const getFormattedDate = (date) => {
     const mongoDBDate = new Date(date);
@@ -62,10 +63,36 @@ const EventCard = ({
       .split(" ")[2];
 
     return `${mongoDBDate.toLocaleDateString("en-US", {
+      weekday: "short",
       day: "numeric",
       month: "short",
       year: "numeric",
     })}  @ ${timeString} ${timezoneAbbreviation}`;
+  };
+
+  const daysCountdown = (date) => {
+    const currentDate = new Date();
+    const mongoDBDate = new Date(date);
+
+    // Set hours, minutes, seconds, and milliseconds to 0 for both dates
+    currentDate.setHours(0, 0, 0, 0);
+    mongoDBDate.setHours(0, 0, 0, 0);
+
+    // Return false if the event date is in the past
+    if (currentDate > mongoDBDate) {
+      return "Over";
+    }
+
+    const differenceInTime = mongoDBDate - currentDate;
+    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+
+    if (differenceInDays === 0) {
+      return "Today";
+    } else if (differenceInDays === 1) {
+      return "Tomorrow";
+    } else {
+      return `in ${differenceInDays} days`;
+    }
   };
 
   useEffect(() => {
@@ -503,7 +530,7 @@ const EventCard = ({
             marginBottom: 10,
             backgroundColor: isDateOlderBy4Hours(mongoDBDate)
               ? Colors.placeholder
-              : "#008080",
+              : "#00806cfa",
           }}
         ></CreateButton>
       )}
@@ -511,7 +538,7 @@ const EventCard = ({
       <View
         style={{
           ...styles.card,
-          borderColor: item.home_away === "Home" ? "#99cc33" : "#ff9966",
+          borderColor: item.home_away === "Home" ? "#66cc99" : "#ff9966",
           backgroundColor: isDateOlderBy4Hours(mongoDBDate)
             ? Colors.placeholder
             : "white",
@@ -521,23 +548,39 @@ const EventCard = ({
           <Text style={{ color: "black" }}>
             {getFormattedDate(mongoDBDate)}
           </Text>
+          <View
+            style={
+              daysCountdown(mongoDBDate) &&
+              daysCountdown(mongoDBDate) === "Over"
+                ? styles.daysCountdownContainerOver
+                : item.home_away === "Home"
+                ? styles.daysCountdownContainerHome
+                : styles.daysCountdownContainerAway
+            }
+          >
+            <Text style={styles.daysCountdown}>
+              {daysCountdown(mongoDBDate) ? daysCountdown(mongoDBDate) : null}
+            </Text>
+          </View>
         </View>
 
         <Text style={styles.sport}>{item.sport}</Text>
         <View style={styles.opponent}>
           <Text
-            style={{ color: item.home_away === "Home" ? "#99cc33" : "#ff9966" }}
+            style={{
+              color: item.home_away === "Home" ? "#66cc99" : "#ff9966",
+            }}
           >
-            {item.home_away === "Home" ? "vs." : "@"}{" "}
+            {item.home_away === "Home" ? "Home vs." : "Away @"}{" "}
           </Text>
-          <Text style={{}}>{item.opponent.name}</Text>
+          <Image
+            style={styles.image}
+            source={{
+              uri: `${item.opponent.logo}`,
+            }}
+          />
+          <Text style={{ fontWeight: "bold" }}>{item.opponent.name}</Text>
         </View>
-        <Image
-          style={styles.image}
-          source={{
-            uri: `${item.opponent.logo}`,
-          }}
-        />
 
         <View style={{ flexDirection: "row", paddingTop: 10 }}>
           {item.link ? (
@@ -706,10 +749,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     paddingTop: 20,
-    paddingBottom: 10,
+    paddingBottom: 20,
     backgroundColor: "white",
     borderRadius: 40,
-    borderWidth: 3,
+    borderWidth: 2,
     width: "100%",
   },
   opponent: {
@@ -723,11 +766,11 @@ const styles = StyleSheet.create({
   },
   dateTime: {
     color: "black",
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     paddingBottom: 15,
     borderColor: "lightgrey",
     padding: 0,
-    width: "100%",
+    width: "95%",
     alignItems: "center",
     marginBottom: 15,
   },
@@ -742,6 +785,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingTop: 15,
     resizeMode: "contain",
+    marginTop: 10,
+    marginBottom: 5,
   },
   amenities: {
     alignItems: "center",
@@ -749,6 +794,25 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   location: { flex: 0.5 },
+  daysCountdownContainerHome: {
+    borderRadius: 10,
+    backgroundColor: "#66cc99",
+    marginTop: 10,
+  },
+  daysCountdownContainerAway: {
+    borderRadius: 10,
+    backgroundColor: "#ff9966",
+    marginTop: 10,
+  },
+  daysCountdownContainerOver: {
+    borderRadius: 10,
+    backgroundColor: "#cd0012",
+    marginTop: 10,
+  },
+  daysCountdown: {
+    color: "white",
+    padding: 5,
+  },
 });
 
 export default EventCard;

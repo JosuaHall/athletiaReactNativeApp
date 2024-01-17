@@ -77,7 +77,7 @@ const EventList = ({ navigation, onPress }) => {
                   backgroundColor: colors.card,
                   ...styles.cardContainer,
                   borderColor:
-                    event.home_away === "Home" ? "#99cc33" : "#ff9966",
+                    event.home_away === "Home" ? "#59db56" : "#ff9966",
                 }}
               >
                 <View style={styles.dateTimeContainer}>
@@ -127,7 +127,7 @@ const EventList = ({ navigation, onPress }) => {
                 <View style={{ flex: 0.2 }}>
                   <Text
                     style={{
-                      color: event.home_away === "Home" ? "#99cc33" : "#ff9966",
+                      color: event.home_away === "Home" ? "#59db56" : "#ff9966",
                     }}
                   >
                     {event.home_away === "Home" ? "vs" : "@"}

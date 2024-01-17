@@ -144,7 +144,7 @@ const EditProfileScreen = ({ navigation }) => {
       ></DeleteButton>
 
       <View style={{ marginVertical: 10 }}>
-        <Text style={{ color: "#aaa", textAlign: "center" }}>
+        <Text style={{ color: "#808080", textAlign: "center" }}>
           Your safety and statisfaction are our top priorities. If you have any
           concerns regarding user safety, or any other issues, please do not
           hesitate to reach out to us. Contact us at support@athletia.app for

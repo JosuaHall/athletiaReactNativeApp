@@ -64,7 +64,7 @@ const DateTimePicker2 = ({ onDateTimeSelected }) => {
           <View style={{ alignItems: "center" }}>
             <Text
               style={{
-                color: isDateTimeChanged ? "green" : "#0f2b8f",
+                color: isDateTimeChanged ? "#59db56" : "#007AFF",
                 paddingVertical: 20,
                 fontSize: 20,
               }}
@@ -87,6 +87,7 @@ const DateTimePicker2 = ({ onDateTimeSelected }) => {
               color: colors.text,
               width: Dimensions.get("window").width - 20,
             }}
+            itemStyle={{ color: colors.text }}
           >
             {moment.tz.names().map((tz) => (
               <Picker.Item
@@ -100,7 +101,7 @@ const DateTimePicker2 = ({ onDateTimeSelected }) => {
           <TouchableOpacity onPress={() => setShowTimeZonePicker(false)}>
             <Text
               style={{
-                color: "green",
+                color: "#59db56",
                 paddingVertical: 10,
                 marginBottom: 40,
                 fontSize: 25,
@@ -118,7 +119,7 @@ const DateTimePicker2 = ({ onDateTimeSelected }) => {
           <View style={{ alignItems: "center" }}>
             <Text
               style={{
-                color: isDateTimeChanged ? "green" : "#0f2b8f",
+                color: isDateTimeChanged ? "#59db56" : "#007AFF",
                 paddingVertical: 20,
                 fontSize: 20,
               }}
@@ -143,7 +144,7 @@ const DateTimePicker2 = ({ onDateTimeSelected }) => {
           <TouchableOpacity onPress={() => setShowPicker(false)}>
             <Text
               style={{
-                color: "green",
+                color: "#59db56",
                 paddingVertical: 10,
                 marginBottom: 40,
                 fontSize: 25,

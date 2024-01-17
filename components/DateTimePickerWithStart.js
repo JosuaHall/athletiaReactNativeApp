@@ -71,7 +71,7 @@ const DateTimePickerWithStart = ({ onDateTimeSelected, startDateTime }) => {
           <View style={{ alignItems: "center" }}>
             <Text
               style={{
-                color: isDateTimeChanged ? "green" : "#0f2b8f",
+                color: isDateTimeChanged ? "#59db56" : "#007AFF",
                 paddingVertical: 20,
                 fontSize: 20,
               }}
@@ -108,7 +108,7 @@ const DateTimePickerWithStart = ({ onDateTimeSelected, startDateTime }) => {
           <TouchableOpacity onPress={() => setShowTimeZonePicker(false)}>
             <Text
               style={{
-                color: "green",
+                color: "#59db56",
                 paddingVertical: 10,
                 marginBottom: 40,
                 fontSize: 25,
@@ -126,7 +126,7 @@ const DateTimePickerWithStart = ({ onDateTimeSelected, startDateTime }) => {
           <View style={{ alignItems: "center" }}>
             <Text
               style={{
-                color: isDateTimeChanged ? "green" : "#0f2b8f",
+                color: isDateTimeChanged ? "#59db56" : "#007AFF",
                 paddingVertical: 20,
                 fontSize: 20,
               }}
@@ -151,7 +151,7 @@ const DateTimePickerWithStart = ({ onDateTimeSelected, startDateTime }) => {
           <TouchableOpacity onPress={() => setShowPicker(false)}>
             <Text
               style={{
-                color: "green",
+                color: "#59db56",
                 paddingVertical: 10,
                 marginBottom: 40,
                 fontSize: 25,

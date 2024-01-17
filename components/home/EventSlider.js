@@ -163,11 +163,24 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
       const index = all_events.findIndex(
         (event) => new Date(event.date_time) >= currentDate
       );
-      const lastElementIndex = all_events.length - 1;
+      // Check if there are events in the future
+      if (index >= 0) {
+        // Get up to 3 past events or all events from activeIndex to the end
+        const pastEvents = all_events.slice(0, index).slice(-3);
 
-      const activeIndex = index >= 0 ? index : lastElementIndex;
+        return {
+          data: pastEvents.concat(all_events.slice(index)),
+          activeIndex: index,
+        };
+      } else {
+        // All events are in the past, get up to 3 latest events
+        const pastEvents = all_events.slice(-3);
 
-      return { data: all_events.slice(activeIndex - 3), activeIndex };
+        return {
+          data: pastEvents,
+          activeIndex: all_events.length - 1,
+        };
+      }
     } else if (teams) {
       const all_events = []
         .concat(
@@ -192,10 +205,24 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
       const index = all_events.findIndex(
         (event) => new Date(event.date_time) > currentDate
       );
-      const lastElementIndex = all_events.length - 1;
-      const activeIndex = index >= 0 ? index : lastElementIndex;
+      // Check if there are events in the future
+      if (index >= 0) {
+        // Get up to 3 past events or all events from activeIndex to the end
+        const pastEvents = all_events.slice(0, index).slice(-3);
 
-      return { data: all_events.slice(activeIndex - 3), activeIndex };
+        return {
+          data: pastEvents.concat(all_events.slice(index)),
+          activeIndex: index,
+        };
+      } else {
+        // All events are in the past, get up to 3 latest events
+        const pastEvents = all_events.slice(-3);
+
+        return {
+          data: pastEvents,
+          activeIndex: all_events.length - 1,
+        };
+      }
     }
 
     return { data: [], activeIndex: 0 };

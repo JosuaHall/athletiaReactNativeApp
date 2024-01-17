@@ -153,8 +153,8 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
                         {org.status === 1 ? (
                           <Text
                             style={{
-                              color: "green",
-                              borderColor: "green",
+                              color: "#59db56",
+                              borderColor: "#59db56",
                               ...styles.statusBadge,
                             }}
                           >

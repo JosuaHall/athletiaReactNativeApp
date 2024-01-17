@@ -171,13 +171,13 @@ const TeamManagementEditEventScreen = ({ navigation, route }) => {
                     fromScreen: "EditEvent",
                     initialAddress: eventLocation
                       ? eventLocation.address
-                      : org.location.address,
+                      : org.location?.address,
                     initialLatitude: eventLocation
                       ? eventLocation.latitude
-                      : org.location.latitude,
+                      : org.location?.latitude,
                     initialLongitude: eventLocation
                       ? eventLocation.longitude
-                      : org.location.longitude,
+                      : org.location?.longitude,
                   })
                 }
               >

@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 50,
     borderRadius: 10,
-    backgroundColor: "#008080",
+    backgroundColor: "#59db56",
   },
   adminUsername: {
     flex: 2,

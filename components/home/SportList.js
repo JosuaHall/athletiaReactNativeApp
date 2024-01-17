@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 30,
     paddingVertical: 20,
-    backgroundColor: "#008080",
+    backgroundColor: "#2b8648",
   },
 });
 

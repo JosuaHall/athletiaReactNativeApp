@@ -80,7 +80,7 @@ const EventCardNoSocial = ({ item }) => {
       <View
         style={{
           ...styles.card,
-          borderColor: item.home_away === "Home" ? "#99cc33" : "#ff9966",
+          borderColor: item.home_away === "Home" ? "#59db56" : "#ff9966",
         }}
       >
         <View style={styles.dateTime}>
@@ -90,9 +90,9 @@ const EventCardNoSocial = ({ item }) => {
         <Text style={styles.sport}>{item.sport}</Text>
         <View style={styles.opponent}>
           <Text
-            style={{ color: item.home_away === "Home" ? "#99cc33" : "#ff9966" }}
+            style={{ color: item.home_away === "Home" ? "#59db56" : "#ff9966" }}
           >
-            {item.home_away === "Home" ? "vs." : "@"}{" "}
+            {item.home_away === "Home" ? "Home vs." : "Away @"}{" "}
           </Text>
           <Text style={{}}>{item.opponent.name}</Text>
         </View>
