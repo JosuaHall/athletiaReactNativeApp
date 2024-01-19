@@ -45,7 +45,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   const user_id = useSelector((state) => state.auth.user._id);
   const org_id = useSelector((state) => state.organization.homeOrgRender._id);
   const teams = useSelector((state) => state.organization.homeOrgRender.teams);
-  const isLoading = useSelector((state) => state.organization.orgIsLoading);
+  const [isLoading, setIsLoading] = useState(false);
   const currentDate = new Date();
   const sixMonthsAgo = new Date(currentDate);
   sixMonthsAgo.setMonth(currentDate.getMonth() - 3);
@@ -56,6 +56,10 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     (state) => state.organization.pointsUpdated
   );
   const [data, setData] = useState([]);
+  const [processedEvents, setProcessedEvents] = useState({
+    data: [],
+    activeIndex: 0,
+  });
   const [activeIndex, setActiveIndex] = useState();
 
   const sliderWidth = Dimensions.get("window").width;
@@ -81,8 +85,8 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     // This function is called when the layout is ready
     setIsLayoutReady(true);
 
-    // Set the initial item after the layout is ready
-    if (carouselRef.current) {
+    // Set the initial item after the layout is ready, but only if activeIndex is not set
+    if (carouselRef.current && activeIndex === undefined) {
       const currentDate = new Date();
       const all_events = data;
       const index = all_events.findIndex(
@@ -98,12 +102,13 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     scrollToItem: () => {
       if (carouselRef.current) {
         const currentDate = new Date();
-        const all_events = data;
+        const all_events = data.slice(0, 10);
         const index = all_events.findIndex(
           (event) => new Date(event.date_time) >= currentDate
         );
         const lastElementIndex = all_events.length - 1;
         const idx = index >= 0 ? index : lastElementIndex;
+
         carouselRef.current.snapToItem(idx);
       }
     },
@@ -122,8 +127,10 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   // Set the initial data
   useEffect(() => {
     if (organization) {
-      const processedEvents = processEvents(teams, eventFilter);
-      setData(processedEvents.data);
+      const processed = processEvents(teams, eventFilter);
+      setProcessedEvents(processed);
+      const initialBatch = processed.data.slice(0, 10);
+      setData(initialBatch);
       setActiveIndex(processedEvents.activeIndex);
       dispatch(setActiveEventIndex(processedEvents.activeIndex));
     }
@@ -260,6 +267,36 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     navigation.navigate("PeopleGoing");
   };
 
+  const onSnapToItem = (index) => {
+    setActiveIndex(index);
+
+    // Check if the user has reached the end and load more items
+    if (index === data.length - 1) {
+      const nextBatchIndex = index + 1;
+      const nextBatchEndIndex = nextBatchIndex + 10;
+
+      if (nextBatchIndex < processedEvents.data.length) {
+        const nextBatch = processedEvents.data.slice(
+          nextBatchIndex,
+          nextBatchEndIndex
+        );
+        setData((prevData) => [...prevData, ...nextBatch]);
+      }
+    }
+  };
+
+  const renderItem = ({ item }) => (
+    <EventCard
+      onPress={(e, event) => attendingEvent(e, event)}
+      onUnattendingPress={(e, event) => unAttendingEvent(e, event)}
+      onShowPeopleGoing={(event, people_attending) =>
+        showPeopleGoing(event, people_attending)
+      }
+      onShare={onShare}
+      item={item}
+    />
+  );
+
   return (
     <ScrollView style={styles.container} onLayout={handleLayoutReady}>
       {teams ? (
@@ -267,21 +304,12 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
           <Carousel
             data={data} //all events
             ref={carouselRef}
-            renderItem={({ item }) => (
-              <EventCard
-                onPress={(e, event) => attendingEvent(e, event)}
-                onUnattendingPress={(e, event) => unAttendingEvent(e, event)}
-                onShowPeopleGoing={(event, people_attending) =>
-                  showPeopleGoing(event, people_attending)
-                }
-                onShare={onShare}
-                item={item}
-              ></EventCard>
-            )}
-            onSnapToItem={(index) => setActiveIndex(index)}
+            renderItem={renderItem}
+            onSnapToItem={onSnapToItem}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
             firstItem={isLayoutReady ? activeIndex : 0}
+            shouldOptimizeUpdates={false} // Disable optimizations to ensure correct rendering
           />
         ) : (
           <View

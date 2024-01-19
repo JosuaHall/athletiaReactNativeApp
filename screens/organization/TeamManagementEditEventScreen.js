@@ -216,7 +216,7 @@ const TeamManagementEditEventScreen = ({ navigation, route }) => {
 
             <View style={{ flex: 2, alignItems: "center" }}>
               <Text style={{ color: colors.text, ...styles.header }}>
-                Special Event Amenities
+                Additional Event Information
               </Text>
 
               <AddAmenityList

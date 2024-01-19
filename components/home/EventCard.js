@@ -392,16 +392,45 @@ const EventCard = ({
   return (
     <View style={styles.container}>
       <View style={styles.socialHeader}>
-        <Text style={{ color: colors.text, ...styles.attendingDescription }}>
-          {isGoing ? (
-            <Text
-              style={{ color: colors.text, ...styles.attendingDescription }}
-            >
-              You &
-            </Text>
-          ) : null}{" "}
-          {attendingNumber} others are attending this event:
-        </Text>
+        {item.people_attending?.length === 0 ? (
+          <Text
+            style={{
+              color: colors.text,
+              ...styles.attendingDescriptionForNoOneAttending,
+            }}
+          >
+            {isDateOlderBy4Hours(mongoDBDate) ? "" : "attending this event?"}
+          </Text>
+        ) : (
+          <Text style={{ color: colors.text, ...styles.attendingDescription }}>
+            {isGoing && attendingNumber === 0 ? (
+              <Text
+                style={{ color: colors.text, ...styles.attendingDescription }}
+              >
+                {isDateOlderBy4Hours(mongoDBDate)
+                  ? "You attended this event"
+                  : "You are attending this event:"}
+              </Text>
+            ) : isGoing && attendingNumber >= 1 ? (
+              <Text
+                style={{ color: colors.text, ...styles.attendingDescription }}
+              >
+                {isDateOlderBy4Hours(mongoDBDate)
+                  ? `You & ${attendingNumber} others attended this event`
+                  : `You & ${attendingNumber} others are attending this event:`}
+              </Text>
+            ) : !isGoing && attendingNumber >= 1 ? (
+              <Text
+                style={{ color: colors.text, ...styles.attendingDescription }}
+              >
+                {isDateOlderBy4Hours(mongoDBDate)
+                  ? `${attendingNumber} others attended this event`
+                  : `${attendingNumber} others are attending this event:`}
+              </Text>
+            ) : null}
+          </Text>
+        )}
+
         <TouchableOpacity
           onPress={(e) => handleShowPeopleGoing(e, item.people_attending)}
           style={styles.userContainer}
@@ -447,7 +476,7 @@ const EventCard = ({
               {
                 //up to two other users are rendered as well, besides if a user is attending this event
                 item.people_attending
-                  .slice(0, isGoing ? 4 : 5)
+                  .slice(0, isGoing ? 5 : 6)
                   .filter((user) => user._id !== userid)
                   .map((user, index) => (
                     <View key={user._id}>
@@ -487,18 +516,6 @@ const EventCard = ({
               }
             </>
           ) : null}
-          <View>
-            <Text
-              style={{
-                color: colors.text,
-                ...styles.border,
-                backgroundColor: colors.background,
-                borderColor: "#FFB7B2",
-              }}
-            >
-              ..
-            </Text>
-          </View>
         </TouchableOpacity>
       </View>
       {isGoing ? (
@@ -652,7 +669,7 @@ const EventCard = ({
             paddingBottom: 10,
           }}
         >
-          Amenities:
+          Information:
         </Text>
         {item.amenities?.length === 0 ? (
           <Text style={{ color: colors.text }}>-</Text>
@@ -692,12 +709,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     zIndex: 1,
   },
+  attendingDescriptionForNoOneAttending: {
+    height: 40,
+    width: "140%",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    padding: 10,
+    top: 50,
+    fontWeight: "bold",
+    zIndex: 1,
+  },
   userContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 5,
     zIndex: 1,
+    right: 12.5,
   },
   border: {
     flex: 1,
@@ -724,7 +753,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   borderNoProfileImg: {
-    flex: 1,
+    textAlign: "center",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 3,
