@@ -84,7 +84,6 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   const handleLayoutReady = () => {
     // This function is called when the layout is ready
     setIsLayoutReady(true);
-
     // Set the initial item after the layout is ready, but only if activeIndex is not set
     if (carouselRef.current && activeIndex === undefined) {
       const currentDate = new Date();
@@ -94,6 +93,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
       );
       const lastElementIndex = all_events.length - 1;
       const idx = index >= 0 ? index : lastElementIndex;
+      setActiveIndex(idx);
       carouselRef.current.snapToItem(idx);
     }
   };

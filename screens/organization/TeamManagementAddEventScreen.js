@@ -205,7 +205,7 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
       <KeyboardAvoidingView
         style={{ flex: 1, width: Dimensions.get("window").width - 30 }}
         behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 10} // Adjust the offset as needed
+        keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 10} // Adjust the offset as needed
       >
         <View style={{ flex: 1, zIndex: 1 }}>
           <View

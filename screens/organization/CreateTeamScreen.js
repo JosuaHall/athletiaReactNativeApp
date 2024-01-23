@@ -44,7 +44,7 @@ const CreateTeamScreen = ({ navigation }) => {
   useEffect(() => {
     if (sports) {
       const filteredSports = sports.filter((sport) =>
-        sport.sport.startsWith(searchTerm)
+        sport.sport.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSportFiltered(filteredSports);
     }
@@ -115,50 +115,12 @@ const CreateTeamScreen = ({ navigation }) => {
                       ...styles.adminUsername,
                     }}
                   >
-                    {`Men's ${item.sport}`}
+                    {`${item.sport}`}
                   </Text>
-                  {!exisitingTeams.includes(`Men's ${item.sport}`) ? (
+                  {!exisitingTeams.includes(`${item.sport}`) ? (
                     <TouchableOpacity
-                      onPress={(e) => addTeam(`Men's ${item.sport}`, e)}
-                      disabled={disabledButtons.includes(`Men's ${item.sport}`)}
-                    >
-                      <Text
-                        style={{
-                          color: "white",
-                          ...styles.adminBadge,
-                        }}
-                      >
-                        Add
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <Text
-                      style={{
-                        color: "#009fe3",
-                        ...styles.addedBadge,
-                      }}
-                    >
-                      Added
-                    </Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    backgroundColor: colors.card,
-                    ...styles.cardContainer,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: colors.text,
-                      ...styles.adminUsername,
-                    }}
-                  >
-                    {`Women's ${item.sport}`}
-                  </Text>
-                  {!exisitingTeams.includes(`Women's ${item.sport}`) ? (
-                    <TouchableOpacity
-                      onPress={(e) => addTeam(`Women's ${item.sport}`, e)}
+                      onPress={(e) => addTeam(`${item.sport}`, e)}
+                      disabled={disabledButtons.includes(`${item.sport}`)}
                     >
                       <Text
                         style={{

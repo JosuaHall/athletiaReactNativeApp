@@ -781,7 +781,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     backgroundColor: "white",
     borderRadius: 40,
-    borderWidth: 2,
+    borderWidth: 5,
     width: "100%",
   },
   opponent: {

@@ -20,7 +20,7 @@ const SportList = ({ allSports, onSelection }) => {
   useEffect(() => {
     if (allSports) {
       const filteredSports = allSports.filter((sport) =>
-        sport.sport.includes(searchTerm)
+        sport.sport.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSportFiltered(filteredSports);
     }
@@ -79,37 +79,10 @@ const SportList = ({ allSports, onSelection }) => {
                       ...styles.adminUsername,
                     }}
                   >
-                    {`Men's ${item.sport}`}
+                    {`${item.sport}`}
                   </Text>
                   <TouchableOpacity
-                    onPress={(e) => addTeam(`Men's ${item.sport}`, e)}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        ...styles.adminBadge,
-                      }}
-                    >
-                      Add
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: colors.card,
-                    ...styles.cardContainer,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: colors.text,
-                      ...styles.adminUsername,
-                    }}
-                  >
-                    {`Women's ${item.sport}`}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={(e) => addTeam(`Women's ${item.sport}`, e)}
+                    onPress={(e) => addTeam(`${item.sport}`, e)}
                   >
                     <Text
                       style={{
