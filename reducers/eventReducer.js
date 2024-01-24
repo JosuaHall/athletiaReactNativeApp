@@ -17,6 +17,7 @@ import {
   FILTER_RESETED,
   USER_SELECTED,
   ACTIVE_EVENT_INDEX_SET,
+  EVENT_STREAM_LINK_SELECTED,
 } from "../actions/types";
 
 const initialState = {
@@ -36,6 +37,7 @@ const initialState = {
   event_selected: "",
   user_selected: "",
   activeEventIndex: 0,
+  selectedStreamLink: "",
 };
 
 export default function (state = initialState, action) {
@@ -133,6 +135,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         activeEventIndex: action.payload,
+      };
+    case EVENT_STREAM_LINK_SELECTED:
+      return {
+        ...state,
+        selectedStreamLink: action.payload,
       };
     default:
       return state;

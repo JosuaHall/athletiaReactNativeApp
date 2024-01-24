@@ -111,13 +111,14 @@ const HomeScreen = ({ navigation }) => {
   //homeSelectedOrg -> has select organization object. However -> need new redux store variable
   //to store the loaded organization from (getOrganization)
   useEffect(() => {
-    if (homeSelectedOrg) dispatch(getOrganizationHome(homeSelectedOrg._id));
+    if (homeSelectedOrg) {
+      dispatch(getOrganizationHome(homeSelectedOrg._id));
+    }
   }, [homeSelectedOrg]); //everytime the selected Org object changed (coming from the database)
 
   /****NEW */
   useEffect(() => {
     setSelectedOrg(upToDateOrgObject); //setSelectedOrg(selected) set component state of selected Object
-    scrollTo();
   }, [
     upToDateOrgObject /*selected:  the organization loaded from getOrganization*/,
   ]);

@@ -13,7 +13,11 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { RESET_IS_CREATED, FOUND_ORG_SELECTED } from "../../actions/types";
+import {
+  RESET_IS_CREATED,
+  FOUND_ORG_SELECTED,
+  STREAM_LINK_SELECTED,
+} from "../../actions/types";
 import SearchBar from "./../../components/SearchBar";
 import {
   getAllOrganizations,
@@ -28,6 +32,7 @@ import DismissKeyboard from "../../components/DismissKeyboard";
 import { Ionicons } from "@expo/vector-icons";
 import LoadingSpinnerStackScreen from "./../LoadingSpinnerStackScreen";
 import LeaderBoard from "../../components/teamManagement/LeaderBoard";
+import InputField from "./../../components/InputField";
 
 const OrganizationSetupScreen = ({ navigation, route }) => {
   const { colors } = useTheme();
@@ -94,6 +99,15 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
       const selectedLocation = route.params.selectedLocation;
       dispatch(updateOrganizationLocation(selectedLocation, orgList[0]._id));
     }
+    if (route.params && route.params.stream_link) {
+      const stream_link = route.params.stream_link;
+      console.log("udpate stream link: ", stream_link);
+      //CREATE A ACTION FOR UPDATING THE ORGANIZATION LINK
+      //
+      //
+      //
+      //dispatch(updateOrganizationStreamLink(stream_link, orgList[0]._id));
+    }
   }, [route.params]);
 
   const closeKeyboard = () => {
@@ -118,6 +132,14 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
     navigation.navigate("OrganizationEvents");
   };
 
+  const handleStreamLinkClicked = ({ stream_link }) => {
+    const link = stream_link ? stream_link : "";
+    dispatch({ type: STREAM_LINK_SELECTED, payload: link });
+    navigation.navigate("updateStreamLink", {
+      fromScreen: "YourOrganizations",
+    });
+  };
+
   return (
     <View>
       <View style={styles.container}>
@@ -125,102 +147,142 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
           <LoadingSpinnerStackScreen></LoadingSpinnerStackScreen>
         ) : (
           <View style={{ marginBottom: 20 }}>
-            {orgList.length !== 0
-              ? orgList.map((org) => {
-                  return (
-                    <Fragment key={org._id}>
-                      <TouchableOpacity
-                        key={org._id}
-                        style={{
-                          backgroundColor: colors.card,
-                          ...styles.organizationCard,
-                        }}
-                        onPress={() =>
-                          organizationSelected(org._id, org.status)
-                        }
-                      >
-                        <Image
-                          style={{
-                            ...styles.logo,
-                          }}
-                          source={{
-                            uri: `${org.logo}`,
-                          }}
-                        />
-                        <Text style={{ color: colors.text, ...styles.name }}>
-                          {org.name}
-                        </Text>
-                        {org.status === 1 ? (
-                          <Text
-                            style={{
-                              color: "#59db56",
-                              borderColor: "#59db56",
-                              ...styles.statusBadge,
-                            }}
-                          >
-                            approved
-                          </Text>
-                        ) : org.status === 2 ? (
-                          <Text
-                            style={{
-                              color: "red",
-                              borderColor: "red",
-                              ...styles.statusBadge,
-                            }}
-                          >
-                            denied
-                          </Text>
-                        ) : (
-                          <Text
-                            style={{
-                              color: "orange",
-                              borderColor: "orange",
-                              ...styles.statusBadge,
-                            }}
-                          >
-                            pending
-                          </Text>
-                        )}
-                      </TouchableOpacity>
+            {orgList.length !== 0 ? (
+              <Fragment key={orgList[0]._id}>
+                <TouchableOpacity
+                  key={orgList[0]._id}
+                  style={{
+                    backgroundColor: colors.card,
+                    ...styles.organizationCard,
+                  }}
+                  onPress={() =>
+                    organizationSelected(orgList[0]._id, orgList[0].status)
+                  }
+                >
+                  <Image
+                    style={{
+                      ...styles.logo,
+                    }}
+                    source={{
+                      uri: `${orgList[0].logo}`,
+                    }}
+                  />
+                  <Text style={{ color: colors.text, ...styles.name }}>
+                    {orgList[0].name}
+                  </Text>
+                  {orgList[0].status === 1 ? (
+                    <Text
+                      style={{
+                        color: "#59db56",
+                        borderColor: "#59db56",
+                        ...styles.statusBadge,
+                      }}
+                    >
+                      approved
+                    </Text>
+                  ) : orgList[0].status === 2 ? (
+                    <Text
+                      style={{
+                        color: "red",
+                        borderColor: "red",
+                        ...styles.statusBadge,
+                      }}
+                    >
+                      denied
+                    </Text>
+                  ) : (
+                    <Text
+                      style={{
+                        color: "orange",
+                        borderColor: "orange",
+                        ...styles.statusBadge,
+                      }}
+                    >
+                      pending
+                    </Text>
+                  )}
+                </TouchableOpacity>
 
-                      <Text
-                        style={{
-                          text: colors.text,
-                          ...styles.heading,
-                          marginVertical: 10,
-                        }}
-                      >
-                        Loaction
-                      </Text>
+                {/* organization location */}
+                <Text
+                  style={{
+                    color: colors.text,
+                    ...styles.heading,
+                    marginVertical: 10,
+                  }}
+                >
+                  Location
+                </Text>
 
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate("findPlace", {
-                            fromScreen: "YourOrganizations",
-                          })
-                        }
-                        style={{
-                          ...styles.addressContainer,
-                          backgroundColor: colors.card,
-                        }}
-                      >
-                        <Ionicons name="ios-pin" size={25} color="red" />
-                        {org.location ? (
-                          <Text
-                            style={{ color: colors.text, paddingRight: 10 }}
-                          >
-                            {org.location.address}
-                          </Text>
-                        ) : (
-                          <Text style={{ color: colors.text }}>
-                            Select Facility Location
-                          </Text>
-                        )}
-                      </TouchableOpacity>
-                    </Fragment>
-                  );
-                })
-              : null}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("findPlace", {
+                      fromScreen: "YourOrganizations",
+                    })
+                  }
+                  style={{
+                    ...styles.addressContainer,
+                    backgroundColor: colors.card,
+                  }}
+                >
+                  <Ionicons name="ios-pin" size={25} color="red" />
+                  {orgList[0].location ? (
+                    <Text style={{ color: colors.text, paddingRight: 10 }}>
+                      {orgList[0].location.address}
+                    </Text>
+                  ) : (
+                    <Text style={{ color: colors.text }}>
+                      Select Facility Location
+                    </Text>
+                  )}
+                </TouchableOpacity>
+
+                {/* organization stream */}
+                <Text
+                  style={{
+                    color: colors.text,
+                    ...styles.heading,
+                    marginVertical: 10,
+                  }}
+                >
+                  Standard Stream Link for Events
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => handleStreamLinkClicked(orgList[0])}
+                  style={{
+                    ...styles.addressContainer,
+                    backgroundColor: colors.card,
+                  }}
+                >
+                  <Ionicons
+                    name="ios-videocam-outline"
+                    size={25}
+                    color={colors.text}
+                  />
+                  {orgList[0].stream_link && orgList[0].stream_link !== "" ? (
+                    <Text
+                      style={{
+                        color: colors.text,
+                        paddingHorizontal: 10,
+                      }}
+                    >
+                      {orgList[0].stream_link}
+                    </Text>
+                  ) : (
+                    <Text
+                      style={{
+                        color: colors.text,
+                        paddingHorizontal: 10,
+                      }}
+                    >
+                      Set Stream Link for Events
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </Fragment>
+            ) : null}
+
             {orgList.length === 0 ? (
               <Fragment>
                 <View

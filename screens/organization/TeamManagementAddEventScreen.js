@@ -24,7 +24,10 @@ import { useDispatch } from "react-redux";
 import { getAllOrganizations } from "../../actions/organizationActions";
 import { useSelector } from "react-redux";
 import { createEvent } from "./../../actions/eventActions";
-import { RESET_EVENT_IS_CREATED } from "../../actions/types";
+import {
+  RESET_EVENT_IS_CREATED,
+  STREAM_LINK_SELECTED,
+} from "../../actions/types";
 import AddButton from "./../../components/AddButton";
 
 const TeamManagementAddEventScreen = ({ navigation, route }) => {
@@ -34,6 +37,7 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
     (state) => state.organization.allOrganizations
   );
   const orgId = useSelector((state) => state.organization.selected._id);
+  const org = useSelector((state) => state.organization.selected);
   const eventCreated = useSelector((state) => state.event.isCreated);
   const selectedTeam = useSelector((state) => state.team.selected_team._id);
   const [eventOpponent, setEventOpponent] = useState("");
@@ -74,10 +78,17 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
     }
   }, [dateTime]);
 
+  //returning from add location or update stream screen
   useEffect(() => {
     if (route.params && route.params.selectedOpponent) {
       const selectedOpponent = route.params.selectedOpponent;
       setEventOpponent(selectedOpponent);
+    }
+    if (route.params && route.params.stream_link) {
+      const s_link = route.params.stream_link;
+      console.log("udpate stream link: ", s_link);
+      setStreamLink(s_link);
+      //dispatch(updateOrganizationStreamLink(stream_link, orgList[0]._id));
     }
   }, [route.params]);
 
@@ -108,8 +119,28 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
     dispatch(createEvent(event));
   };
 
-  const dropdownOptions = ["Home", "Away"];
+  //fill in the stream link depending on away or home AND if available
+  useEffect(() => {
+    if (homeAway !== "" && eventOpponent) determineStreamLinkText();
+  }, [homeAway, eventOpponent]);
+  const determineStreamLinkText = () => {
+    if (homeAway === "Home") {
+      setStreamLink(org.stream_link || "");
+    } else if (homeAway === "Away") {
+      setStreamLink(eventOpponent.stream_link || "");
+    }
+  };
 
+  //navigate to edit stream link page
+  const handleStreamLinkClicked = (link) => {
+    dispatch({ type: STREAM_LINK_SELECTED, payload: link });
+    navigation.navigate("updateStreamLink", {
+      fromScreen: "AddEvent",
+    });
+  };
+
+  //dropdown options
+  const dropdownOptions = ["Home", "Away"];
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={{ flex: 1.2 }}>
@@ -205,7 +236,7 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
       <KeyboardAvoidingView
         style={{ flex: 1, width: Dimensions.get("window").width - 30 }}
         behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 10} // Adjust the offset as needed
+        keyboardVerticalOffset={Platform.OS === "ios" ? 30 : 10} // Adjust the offset as needed
       >
         <View style={{ flex: 1, zIndex: 1 }}>
           <View
@@ -219,57 +250,29 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
             <Text style={{ color: colors.text, ...styles.header }}>
               Stream Link
             </Text>
-            <TouchableOpacity
-              onPress={toggleIsLinkInfo}
-              style={{
-                right: 10,
-                top: 20,
-                position: "absolute",
-              }}
-            >
-              <Ionicons
-                name="ios-information-circle-outline"
-                size={25}
-                color="orange"
-              />
-            </TouchableOpacity>
           </View>
+          <TouchableOpacity
+            onPress={() => handleStreamLinkClicked(streamLink)}
+            style={{
+              ...styles.addressContainer,
+              backgroundColor: colors.card,
+            }}
+          >
+            <Ionicons
+              name="ios-videocam-outline"
+              size={25}
+              color={colors.text}
+            />
 
-          {isLinkInfo && (
-            <View
+            <Text
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#ff761a",
-                padding: 10,
-                borderRadius: 5,
-                width: Dimensions.get("window").width - 30,
-                zIndex: 1,
+                color: colors.text,
+                paddingHorizontal: 10,
               }}
             >
-              <Ionicons
-                name="ios-information-circle-outline"
-                size={20}
-                color="orange"
-              />
-              <Text
-                style={{
-                  color: "black",
-                  ...styles.infoText,
-                  paddingHorizontal: 10,
-                }}
-              >
-                Only valid URLs will work. E.g. https://www.url.com or
-                http://www.url.com
-              </Text>
-            </View>
-          )}
-
-          <InputField
-            placeholder="format: https://www.url.com"
-            value={streamLink}
-            onInput={setStreamLink}
-          ></InputField>
+              {streamLink === "" ? "Update Stream Link" : streamLink}
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
 
@@ -339,6 +342,17 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 15,
     fontWeight: "bold",
+  },
+  addressContainer: {
+    flexDirection: "row",
+    //backgroundColor: Colors.orgCardBackground,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: Dimensions.get("window").width - 30,
+    marginVertical: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
 });
 

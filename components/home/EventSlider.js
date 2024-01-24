@@ -45,33 +45,35 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   const user_id = useSelector((state) => state.auth.user._id);
   const org_id = useSelector((state) => state.organization.homeOrgRender._id);
   const teams = useSelector((state) => state.organization.homeOrgRender.teams);
+  const user = useSelector((state) => state.auth.user);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const currentDate = new Date();
-  const sixMonthsAgo = new Date(currentDate);
-  sixMonthsAgo.setMonth(currentDate.getMonth() - 3);
-
-  const sixMonthsForward = new Date(currentDate);
-  sixMonthsForward.setMonth(currentDate.getMonth() + 6);
-  const pointsUpdated = useSelector(
-    (state) => state.organization.pointsUpdated
-  );
   const [data, setData] = useState([]);
   const [processedEvents, setProcessedEvents] = useState({
     data: [],
     activeIndex: 0,
   });
   const [activeIndex, setActiveIndex] = useState();
-
   const sliderWidth = Dimensions.get("window").width;
   const itemWidth = sliderWidth - 100;
 
-  const [allLeaderboards, setAllLeaderboards] = useState([]);
   const followedOrg = useSelector(
     (state) => state.auth.user.organizations_followed
   );
-  const orgIds = followedOrg.map((org) => org._id);
 
-  const user = useSelector((state) => state.auth.user);
+  //time
+  const currentDate = new Date();
+  const threeMonthsAgo = new Date(currentDate);
+  threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+  const sixMonthsForward = new Date(currentDate);
+  sixMonthsForward.setMonth(currentDate.getMonth() + 6);
+
+  //points leaderboard
+  const pointsUpdated = useSelector(
+    (state) => state.organization.pointsUpdated
+  );
+  const [allLeaderboards, setAllLeaderboards] = useState([]);
+  const orgIds = followedOrg.map((org) => org._id);
   const leaderboards = useSelector(
     (state) => state.organization.allLeaderboards
   );
@@ -79,9 +81,18 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     (state) => state.organization.orgLeaderboard
   );
   const teamLeaderboard = useSelector((state) => state.team.teamLeaderboard);
-  const [isLayoutReady, setIsLayoutReady] = useState(false);
+  //leaderboard
+  useEffect(() => {
+    // currently not in use
+    if (leaderboards) setAllLeaderboards(leaderboards);
+  }, [leaderboards]);
 
-  const handleLayoutReady = () => {
+  useEffect(() => {
+    //dispatch(getAllLeaderboardsOfOrganization(orgIds));   currently not in use
+    //dispatch(resetPointsUpdated());
+  }, [, followedOrg, user, orgLeaderboard, teamLeaderboard, pointsUpdated]);
+
+  /*const handleLayoutReady = () => {
     // This function is called when the layout is ready
     setIsLayoutReady(true);
     // Set the initial item after the layout is ready, but only if activeIndex is not set
@@ -96,13 +107,14 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
       setActiveIndex(idx);
       carouselRef.current.snapToItem(idx);
     }
-  };
+  };*/
 
+  //scroll to latest item
   useImperativeHandle(ref, () => ({
     scrollToItem: () => {
       if (carouselRef.current) {
         const currentDate = new Date();
-        const all_events = data.slice(0, 10);
+        const all_events = data.slice(0, 9);
         const index = all_events.findIndex(
           (event) => new Date(event.date_time) >= currentDate
         );
@@ -114,22 +126,12 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     },
   }));
 
-  useEffect(() => {
-    // currently not in use
-    if (leaderboards) setAllLeaderboards(leaderboards);
-  }, [leaderboards]);
-
-  useEffect(() => {
-    //dispatch(getAllLeaderboardsOfOrganization(orgIds));   currently not in use
-    //dispatch(resetPointsUpdated());
-  }, [, followedOrg, user, orgLeaderboard, teamLeaderboard, pointsUpdated]);
-
   // Set the initial data
   useEffect(() => {
     if (organization) {
       const processed = processEvents(teams, eventFilter);
       setProcessedEvents(processed);
-      const initialBatch = processed.data.slice(0, 10);
+      const initialBatch = processed.data.slice(0, 9);
       setData(initialBatch);
       setActiveIndex(processedEvents.activeIndex);
       dispatch(setActiveEventIndex(processedEvents.activeIndex));
@@ -151,7 +153,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
             team.events
               .filter(
                 (event) =>
-                  new Date(event.date_time) >= sixMonthsAgo &&
+                  new Date(event.date_time) >= threeMonthsAgo &&
                   new Date(event.date_time) <= sixMonthsForward &&
                   (!eventFilter.homeAway ||
                     eventFilter.homeAway.includes(event.home_away))
@@ -195,7 +197,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
             team.events
               .filter(
                 (event) =>
-                  new Date(event.date_time) >= sixMonthsAgo &&
+                  new Date(event.date_time) >= threeMonthsAgo &&
                   new Date(event.date_time) <= sixMonthsForward
               )
               .map((event) => ({
@@ -247,6 +249,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
 
     dispatch(attendEvent(orgid, teamid, eventid, userid));
   };
+
   const unAttendingEvent = (e, event) => {
     //action: attendEvent   orgid, teamid, eventid, userid
     //-> attendEvent updates event.people_attending && returns updated oranization Object
@@ -273,7 +276,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     // Check if the user has reached the end and load more items
     if (index === data.length - 1) {
       const nextBatchIndex = index + 1;
-      const nextBatchEndIndex = nextBatchIndex + 10;
+      const nextBatchEndIndex = nextBatchIndex + 9;
 
       if (nextBatchIndex < processedEvents.data.length) {
         const nextBatch = processedEvents.data.slice(
@@ -298,7 +301,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   );
 
   return (
-    <ScrollView style={styles.container} onLayout={handleLayoutReady}>
+    <ScrollView style={styles.container} /*onLayout={handleLayoutReady}*/>
       {teams ? (
         teams.length !== 0 && data && data.length !== 0 ? (
           <Carousel

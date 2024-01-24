@@ -555,7 +555,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   teamName: {
-    justifySelf: "center",
     textAlign: "left",
     fontSize: 17,
     paddingHorizontal: 10,

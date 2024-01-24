@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: 20,
     backgroundColor: "white",
-    borderWidth: 3,
+    borderWidth: 5,
     borderRadius: 50,
     width: "100%",
   },

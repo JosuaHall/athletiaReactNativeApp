@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Text, View } from "react-native";
 import { Provider, useDispatch } from "react-redux";
 import store from "./store";
@@ -27,9 +28,11 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <View style={{ flex: 1 }}>
-        <AppMain />
-      </View>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <AppMain />
+        </View>
+      </GestureHandlerRootView>
     </Provider>
   );
 };

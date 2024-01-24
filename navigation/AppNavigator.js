@@ -54,6 +54,7 @@ import ProfileDetailsScreen from "../screens/home/ProfileDetailsScreen";
 import ProfileSettingsScreen from "../screens/profile/ProfileSettingsScreen";
 import { saveUpdatedSocials } from "../actions/authActions";
 import { setActiveEventIndex } from "../actions/eventActions";
+import UpdateStreamLinkScreen from "../screens/organization/UpdateStreamLinkScreen";
 
 const NotAuthenticatedStack = createNativeStackNavigator();
 const OrganizationSetupStack = createNativeStackNavigator();
@@ -103,6 +104,24 @@ const OrganizationSetupStackScreen = () => {
         options={({ navigation }) => ({
           headerTitle: "Find Address",
           headerTitleAlign: "center",
+          ...Platform.select({
+            ios: {
+              headerBackground: () => {
+                colors.background;
+              },
+            },
+          }),
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+        })}
+      />
+      <OrganizationSetupStack.Screen
+        name="updateStreamLink"
+        component={UpdateStreamLinkScreen}
+        options={({ navigation }) => ({
+          headerTitle: "Stream Link",
+          headerTitleAlign: "right",
           ...Platform.select({
             ios: {
               headerBackground: () => {

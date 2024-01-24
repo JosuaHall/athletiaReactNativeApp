@@ -23,6 +23,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteButton from "../DeleteButton";
 import { updatePoints } from "../../actions/organizationActions";
+import SocialHeader from "./SocialHeader";
 
 const EventCard = ({
   item,
@@ -391,7 +392,18 @@ const EventCard = ({
   const address = item.event_location?.address || orgLocation?.address || null;
   return (
     <View style={styles.container}>
-      <View style={styles.socialHeader}>
+      <SocialHeader
+        item={item}
+        isGoing={isGoing}
+        attendingNumber={attendingNumber}
+        user={user}
+        handleShowPeopleGoing={handleShowPeopleGoing}
+        colors={colors}
+        styles={styles}
+        userid={userid}
+        mongoDBDate={mongoDBDate}
+      />
+      {/*<View style={styles.socialHeader}>
         {item.people_attending?.length === 0 ? (
           <Text
             style={{
@@ -471,7 +483,7 @@ const EventCard = ({
                   </View>
                 ) : (
                   ""
-                ) //************************************** */
+                ) //************************************** 
               }
               {
                 //up to two other users are rendered as well, besides if a user is attending this event
@@ -517,7 +529,7 @@ const EventCard = ({
             </>
           ) : null}
         </TouchableOpacity>
-      </View>
+      </View>*/}
       {isGoing ? (
         <DeleteButton
           onPress={
