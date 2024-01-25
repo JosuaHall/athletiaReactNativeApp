@@ -20,7 +20,9 @@ const EmailVerificationScreen = () => {
 
   const verifyCode = () => {
     if (!code) {
-      return setMsg("Please enter your Verification Code!");
+      return setMsg(
+        "Please enter your Verification Code! Also, check your junk folder :)"
+      );
     }
     setMsg("");
     dispatch(verifyEmail({ verificationCode: code }));

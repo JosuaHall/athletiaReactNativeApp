@@ -14,6 +14,7 @@ import {
   YOUR_ORGANIZATION_LIST_IS_LOADING,
   ORGANIZATION_CREATION_FAIL,
   ORGANIZATION_LOCATION_UPDATED,
+  ORGANIZATION_STREAM_LINK_UPDATED,
   ORGANIZATION_ADMIN_REQUESTS_LOADED,
   LEADERBOARD_CREATED,
   RESET_LEADERBOARD,
@@ -434,3 +435,32 @@ export const updatePoints = (userid, teamid, orgid, eventid) => (dispatch) => {
 export const triggerScrollToLatestEvent = (val) => (dispatch) => {
   dispatch({ type: TRIGGER_SCROLL_TO_LATEST_EVENT, payload: val });
 };
+
+export const updateOrganizationStreamLink =
+  (stream_link, orgid) => (dispatch) => {
+    dispatch({ type: YOUR_ORGANIZATION_LIST_IS_LOADING });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log(stream_link, orgid);
+    //Request body
+    const body = JSON.stringify({
+      stream_link,
+    });
+
+    axios
+      .put(
+        `${proxy}/api/organizations/update/stream_link/${orgid}`,
+        body,
+        config
+      )
+      .then((res) => {
+        dispatch({ type: ORGANIZATION_STREAM_LINK_UPDATED, payload: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };

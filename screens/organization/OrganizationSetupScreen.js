@@ -27,6 +27,7 @@ import {
   sendOwnerRequest,
   getOrganizationAdminRequests,
   getLeaderboard,
+  updateOrganizationStreamLink,
 } from "../../actions/organizationActions";
 import DismissKeyboard from "../../components/DismissKeyboard";
 import { Ionicons } from "@expo/vector-icons";
@@ -103,10 +104,7 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
       const stream_link = route.params.stream_link;
       console.log("udpate stream link: ", stream_link);
       //CREATE A ACTION FOR UPDATING THE ORGANIZATION LINK
-      //
-      //
-      //
-      //dispatch(updateOrganizationStreamLink(stream_link, orgList[0]._id));
+      dispatch(updateOrganizationStreamLink(stream_link, orgList[0]._id));
     }
   }, [route.params]);
 
@@ -245,7 +243,7 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
                     marginVertical: 10,
                   }}
                 >
-                  Standard Stream Link for Events
+                  Default Stream Link for Events
                 </Text>
 
                 <TouchableOpacity
@@ -260,7 +258,9 @@ const OrganizationSetupScreen = ({ navigation, route }) => {
                     size={25}
                     color={colors.text}
                   />
-                  {orgList[0].stream_link && orgList[0].stream_link !== "" ? (
+                  {orgList[0].stream_link !== undefined &&
+                  orgList[0].stream_link !== null &&
+                  orgList[0].stream_link !== "" ? (
                     <Text
                       style={{
                         color: colors.text,

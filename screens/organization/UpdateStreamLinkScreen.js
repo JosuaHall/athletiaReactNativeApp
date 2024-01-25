@@ -18,6 +18,7 @@ const UpdateStreamLinkScreen = ({ navigation, route }) => {
     (state) => state.organization.selectedStreamLink
   );
   const [isLinkInfo, setIsLinkInfo] = useState(false);
+  const [msg, setMsg] = useState("");
 
   const toggleIsLinkInfo = () => {
     setIsLinkInfo(!isLinkInfo);
@@ -41,19 +42,28 @@ const UpdateStreamLinkScreen = ({ navigation, route }) => {
     //do something
     const stream_link = streamLink.trim();
 
+    // Validate the stream_link format
+    if (!isValidLinkFormat(stream_link)) {
+      // Display an error message (replace this with your actual error handling logic)
+      setMsg("Invalid stream link format");
+      return;
+    }
+
     const fromScreen = route.params?.fromScreen ?? null;
     navigation.navigate(fromScreen, { stream_link });
+  };
+
+  const isValidLinkFormat = (link) => {
+    // Implement your validation logic here
+    // For example, you can use a regular expression to check if it's a valid link format
+    const linkRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    return linkRegex.test(link);
   };
 
   return (
     <View>
       <Text style={{ color: colors.text, textAlign: "center", margin: 10 }}>
-        This link will be the default for all event streams of your
-        organization.
-      </Text>
-      <Text style={{ color: colors.text, textAlign: "center", margin: 10 }}>
-        You will be able to modify this stream link individually for each event
-        later on.
+        You can modify this stream link for each event individually.
       </Text>
       <View style={{ padding: 10, alignItems: "center" }}>
         <TouchableOpacity
@@ -99,19 +109,24 @@ const UpdateStreamLinkScreen = ({ navigation, route }) => {
         </View>
       )}
 
-      <InputField
-        placeholder="Enter https link: e.g. https://www.link.com"
-        onInput={handleStreamLinkChange}
-        value={streamLink}
-        // Add any additional styles if needed
-        secureTextEntry={false} // Set to true if it's a password input
-      />
+      {msg && (
+        <Text style={{ color: "orange", textAlign: "center" }}>{msg}</Text>
+      )}
+      <View style={{ marginHorizontal: 10 }}>
+        <InputField
+          placeholder="Enter https link: e.g. https://www.link.com"
+          onInput={handleStreamLinkChange}
+          value={streamLink}
+          // Add any additional styles if needed
+          secureTextEntry={false} // Set to true if it's a password input
+        />
 
-      <CreateButton
-        styling={{ width: "100%", margin: 0, marginTop: 10 }}
-        onPress={() => updateStreamLink()}
-        label="Update"
-      ></CreateButton>
+        <CreateButton
+          styling={{ width: "100%", margin: 0, marginTop: 10 }}
+          onPress={() => updateStreamLink()}
+          label="Update"
+        ></CreateButton>
+      </View>
     </View>
   );
 };

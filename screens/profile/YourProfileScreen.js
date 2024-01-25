@@ -202,21 +202,21 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flex: 2,
     alignSelf: "center",
-    justifySelf: "center",
+
     marginVertical: "auto",
     height: "45%",
   },
 
   orgName: {
     flex: 1,
-    justifySelf: "center",
+
     textAlign: "left",
     fontSize: 17,
     fontWeight: "bold",
   },
   teamName: {
     flex: 1,
-    justifySelf: "center",
+
     textAlign: "left",
     fontSize: 17,
   },

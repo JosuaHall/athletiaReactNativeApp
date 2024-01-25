@@ -63,95 +63,120 @@ const EventList = ({ navigation, onPress }) => {
     })}`;
   };
 
+  // Determine the index of the next closest event
+  const now = new Date();
+  const nextEventIndex = events
+    ? events.findIndex((event) => new Date(event.date_time) > now)
+    : null;
+
   return (
     <View style={styles.container}>
       {!isLoading ? (
         events.length !== 0 ? (
-          events.map((event) => (
-            <TouchableOpacity
-              key={event._id}
-              onPress={(e) => handleEventPress(e, event)}
-            >
-              <View
-                style={{
-                  backgroundColor: colors.card,
-                  ...styles.cardContainer,
-                  borderColor:
-                    event.home_away === "Home" ? "#59db56" : "#ff9966",
-                }}
-              >
-                <View style={styles.dateTimeContainer}>
-                  <Text
-                    style={{
-                      color: colors.text,
-                      ...styles.date,
-                    }}
-                  >
-                    {new Date(event.date_time).toLocaleDateString("en-US", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </Text>
-
-                  <Text
-                    style={{
-                      color: colors.text,
-                      ...styles.time,
-                    }}
-                  >
-                    {`${new Date(event.date_time).toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })}`}
-                  </Text>
-
-                  <Text
-                    style={{
-                      color: colors.text,
-
-                      ...styles.date,
-                    }}
-                  >
-                    {
-                      new Date(event.date_time)
-                        .toLocaleTimeString("en-US", {
-                          timeZoneName: "short",
-                        })
-                        .split(" ")[2]
-                    }
-                  </Text>
-                </View>
-
-                <View style={{ flex: 0.2 }}>
-                  <Text
-                    style={{
-                      color: event.home_away === "Home" ? "#59db56" : "#ff9966",
-                    }}
-                  >
-                    {event.home_away === "Home" ? "vs" : "@"}
-                  </Text>
-                </View>
-
-                <View style={styles.eventLogoContainer}>
-                  <Image
-                    style={styles.eventLogo}
-                    source={{
-                      uri: `${event.opponent.logo}`,
-                    }}
-                  />
-                </View>
-                <Text
+          events.map((event, index) => (
+            <View key={event._id}>
+              {nextEventIndex && index === nextEventIndex ? (
+                <View
                   style={{
-                    color: colors.text,
-                    ...styles.opponent,
+                    marginTop: 10,
+                    marginBottom: 5,
+                    paddingBottom: 5,
+                    borderBottomWidth: 3,
+                    borderBottomColor: "red",
+                    marginHorizontal: 50,
                   }}
                 >
-                  {event.opponent.name}
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <Text style={{ color: colors.text, textAlign: "center" }}>
+                    Upcoming Events
+                  </Text>
+                </View>
+              ) : null}
+              <TouchableOpacity onPress={(e) => handleEventPress(e, event)}>
+                <View
+                  style={{
+                    backgroundColor: colors.card,
+                    ...styles.cardContainer,
+                    borderColor:
+                      event.home_away === "Home" ? "#59db56" : "#ff9966",
+                  }}
+                >
+                  <View style={styles.dateTimeContainer}>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        ...styles.date,
+                      }}
+                    >
+                      {new Date(event.date_time).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </Text>
+
+                    <Text
+                      style={{
+                        color: colors.text,
+                        ...styles.time,
+                      }}
+                    >
+                      {`${new Date(event.date_time).toLocaleTimeString(
+                        "en-US",
+                        {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        }
+                      )}`}
+                    </Text>
+
+                    <Text
+                      style={{
+                        color: colors.text,
+
+                        ...styles.date,
+                      }}
+                    >
+                      {
+                        new Date(event.date_time)
+                          .toLocaleTimeString("en-US", {
+                            timeZoneName: "short",
+                          })
+                          .split(" ")[2]
+                      }
+                    </Text>
+                  </View>
+
+                  <View style={{ flex: 0.2 }}>
+                    <Text
+                      style={{
+                        color:
+                          event.home_away === "Home" ? "#59db56" : "#ff9966",
+                      }}
+                    >
+                      {event.home_away === "Home" ? "vs" : "@"}
+                    </Text>
+                  </View>
+
+                  <View style={styles.eventLogoContainer}>
+                    <Image
+                      style={styles.eventLogo}
+                      source={{
+                        uri: `${event.opponent.logo}`,
+                      }}
+                    />
+                  </View>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      ...styles.opponent,
+                    }}
+                  >
+                    {event.opponent.name}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           ))
         ) : (
           <Text style={{ color: colors.text, ...styles.opponent }}>

@@ -35,7 +35,6 @@ const DateTimePicker2 = ({ onDateTimeSelected }) => {
 
       setDateTime(newDate);
       setIsDateTimeChanged(true);
-      setShowPicker(false);
     }
   };
 

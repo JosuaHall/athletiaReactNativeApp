@@ -6,6 +6,7 @@ import {
   Image,
   Linking,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,9 +38,14 @@ const EventCardNoSocial = ({ item }) => {
       );
     } else {
       if (Platform.OS === "android") {
-        ToastAndroid.show("Invalid link", ToastAndroid.SHORT);
+        ToastAndroid.show(
+          "Invalid link. Contact Organization.",
+          ToastAndroid.SHORT
+        );
       } else {
-        Alert.alert("Invalid link", null, [{ text: "OK", onPress: () => {} }]);
+        Alert.alert("Invalid link. Contact Organization.", null, [
+          { text: "OK", onPress: () => {} },
+        ]);
       }
     }
   };
@@ -74,7 +80,7 @@ const EventCardNoSocial = ({ item }) => {
       .catch((error) => console.log("An error occurred", error));
   };
 
-  const address = item.event_location?.address || orgLocation?.address || null;
+  const address = item.event_location?.address || null;
   return (
     <View style={styles.container}>
       <View

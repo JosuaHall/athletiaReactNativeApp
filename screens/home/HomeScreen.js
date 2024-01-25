@@ -180,7 +180,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  useFocusEffect(() => {
+  /*useFocusEffect(() => {
     // Perform actions on initial focus
 
     if (selectedOrg) {
@@ -191,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
     return () => {
       // Your cleanup code here...
     };
-  });
+  });*/
 
   return (
     <ScrollView

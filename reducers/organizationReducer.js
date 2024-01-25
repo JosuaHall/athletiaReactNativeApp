@@ -15,6 +15,7 @@ import {
   OWNER_REQUEST_SENT,
   YOUR_ORGANIZATION_LIST_IS_LOADING,
   ORGANIZATION_LOCATION_UPDATED,
+  ORGANIZATION_STREAM_LINK_UPDATED,
   ORGANIZATION_ADMIN_REQUESTS_LOADED,
   LEADERBOARD_CREATED,
   RESET_LEADERBOARD,
@@ -92,6 +93,13 @@ export default function (state = initialState, action) {
         selected: action.payload,
       };
     case ORGANIZATION_LOCATION_UPDATED:
+      return {
+        ...state,
+        selected: "",
+        yourOrgListIsLoading: false,
+        organization_list: action.payload,
+      };
+    case ORGANIZATION_STREAM_LINK_UPDATED:
       return {
         ...state,
         selected: "",

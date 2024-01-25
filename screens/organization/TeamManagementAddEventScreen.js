@@ -84,11 +84,15 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
       const selectedOpponent = route.params.selectedOpponent;
       setEventOpponent(selectedOpponent);
     }
-    if (route.params && route.params.stream_link) {
-      const s_link = route.params.stream_link;
-      console.log("udpate stream link: ", s_link);
+    //checks for any changes to streamlink and updates it
+    let s_link = "";
+    if (
+      route.params &&
+      route.params.stream_link !== undefined &&
+      route.params.stream_link !== null
+    ) {
+      s_link = route.params.stream_link;
       setStreamLink(s_link);
-      //dispatch(updateOrganizationStreamLink(stream_link, orgList[0]._id));
     }
   }, [route.params]);
 
@@ -101,6 +105,7 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
       competitor: eventOpponent._id,
       home_away: homeAway.trim(),
       link: streamLink.trim(),
+      event_location: null,
     };
 
     if (!event.competitor) {
@@ -116,6 +121,16 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
       return;
     }
 
+    // Determine event_location based on homeAway
+    if (homeAway.trim().toLowerCase() === "home" && org.location) {
+      event.event_location = org.location;
+    } else if (
+      homeAway.trim().toLowerCase() === "away" &&
+      eventOpponent.location
+    ) {
+      event.event_location = eventOpponent.location;
+    }
+
     dispatch(createEvent(event));
   };
 
@@ -123,6 +138,7 @@ const TeamManagementAddEventScreen = ({ navigation, route }) => {
   useEffect(() => {
     if (homeAway !== "" && eventOpponent) determineStreamLinkText();
   }, [homeAway, eventOpponent]);
+
   const determineStreamLinkText = () => {
     if (homeAway === "Home") {
       setStreamLink(org.stream_link || "");

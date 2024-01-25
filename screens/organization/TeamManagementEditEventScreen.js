@@ -117,7 +117,7 @@ const TeamManagementEditEventScreen = ({ navigation, route }) => {
   };
 
   const dropdownOptions = ["Home", "Away"];
-  const address = eventLocation?.address || org.location?.address;
+  const address = eventLocation?.address || null;
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -171,13 +171,13 @@ const TeamManagementEditEventScreen = ({ navigation, route }) => {
                     fromScreen: "EditEvent",
                     initialAddress: eventLocation
                       ? eventLocation.address
-                      : org.location?.address,
+                      : null, //org.location?.address,
                     initialLatitude: eventLocation
                       ? eventLocation.latitude
-                      : org.location?.latitude,
+                      : null, //org.location?.latitude,
                     initialLongitude: eventLocation
                       ? eventLocation.longitude
-                      : org.location?.longitude,
+                      : null, //org.location?.longitude,
                   })
                 }
               >

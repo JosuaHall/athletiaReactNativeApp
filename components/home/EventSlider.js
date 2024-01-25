@@ -67,6 +67,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
   const sixMonthsForward = new Date(currentDate);
   sixMonthsForward.setMonth(currentDate.getMonth() + 6);
+  const threeHoursLater = new Date(currentDate.getTime() - 3 * 60 * 60 * 1000);
 
   //points leaderboard
   const pointsUpdated = useSelector(
@@ -116,7 +117,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
         const currentDate = new Date();
         const all_events = data.slice(0, 9);
         const index = all_events.findIndex(
-          (event) => new Date(event.date_time) >= currentDate
+          (event) => new Date(event.date_time) > threeHoursLater
         );
         const lastElementIndex = all_events.length - 1;
         const idx = index >= 0 ? index : lastElementIndex;
@@ -131,7 +132,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     if (organization) {
       const processed = processEvents(teams, eventFilter);
       setProcessedEvents(processed);
-      const initialBatch = processed.data.slice(0, 9);
+      const initialBatch = processed.data.slice(0, 20);
       setData(initialBatch);
       setActiveIndex(processedEvents.activeIndex);
       dispatch(setActiveEventIndex(processedEvents.activeIndex));
@@ -170,7 +171,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
 
       const currentDate = new Date();
       const index = all_events.findIndex(
-        (event) => new Date(event.date_time) >= currentDate
+        (event) => new Date(event.date_time) > threeHoursLater
       );
       // Check if there are events in the future
       if (index >= 0) {
@@ -212,7 +213,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
 
       const currentDate = new Date();
       const index = all_events.findIndex(
-        (event) => new Date(event.date_time) > currentDate
+        (event) => new Date(event.date_time) > threeHoursLater
       );
       // Check if there are events in the future
       if (index >= 0) {
@@ -276,7 +277,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     // Check if the user has reached the end and load more items
     if (index === data.length - 1) {
       const nextBatchIndex = index + 1;
-      const nextBatchEndIndex = nextBatchIndex + 9;
+      const nextBatchEndIndex = nextBatchIndex + 20;
 
       if (nextBatchIndex < processedEvents.data.length) {
         const nextBatch = processedEvents.data.slice(

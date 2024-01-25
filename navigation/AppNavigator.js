@@ -731,6 +731,24 @@ const YourProfileStackScreen = () => {
         })}
       />
       <YourProfileStack.Screen
+        name="updateStreamLink"
+        component={UpdateStreamLinkScreen}
+        options={({ navigation }) => ({
+          headerTitle: "Stream Link",
+          headerTitleAlign: "right",
+          ...Platform.select({
+            ios: {
+              headerBackground: () => {
+                colors.background;
+              },
+            },
+          }),
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+        })}
+      />
+      <YourProfileStack.Screen
         name="AddAdmin"
         component={TeamManagementAddAdminScreen}
         options={({ navigation }) => ({

@@ -75,11 +75,27 @@ const EventCard = ({
     const currentDate = new Date();
     const mongoDBDate = new Date(date);
 
+    // Return "Over" if the event date is more than 3 hours in the past
+    const threeHoursEarlier = new Date(
+      currentDate.getTime() + 3 * 60 * 60 * 1000
+    );
+    if (currentDate > threeHoursEarlier && currentDate > mongoDBDate) {
+      return "Over";
+    }
+
+    // Return "Live" if the event is within 3 hours from now
+    const threeHoursLater = new Date(
+      mongoDBDate.getTime() + 3 * 60 * 60 * 1000
+    );
+    if (currentDate >= mongoDBDate && currentDate < threeHoursLater) {
+      return "Live";
+    }
+
     // Set hours, minutes, seconds, and milliseconds to 0 for both dates
     currentDate.setHours(0, 0, 0, 0);
     mongoDBDate.setHours(0, 0, 0, 0);
 
-    // Return false if the event date is in the past
+    // Return "Over" if the event date is in the past
     if (currentDate > mongoDBDate) {
       return "Over";
     }
@@ -134,9 +150,14 @@ const EventCard = ({
       );
     } else {
       if (Platform.OS === "android") {
-        ToastAndroid.show("Invalid link", ToastAndroid.SHORT);
+        ToastAndroid.show(
+          "Invalid link. Contact Organization.",
+          ToastAndroid.SHORT
+        );
       } else {
-        Alert.alert("Invalid link", null, [{ text: "OK", onPress: () => {} }]);
+        Alert.alert("Invalid link. Contact Organization.", null, [
+          { text: "OK", onPress: () => {} },
+        ]);
       }
     }
   };
@@ -389,7 +410,7 @@ const EventCard = ({
     // Compare the time difference with 4 hours
     return timeDifference > fourHoursInMilliseconds;
   };
-  const address = item.event_location?.address || orgLocation?.address || null;
+  const address = item.event_location?.address || null;
   return (
     <View style={styles.container}>
       <SocialHeader
@@ -542,7 +563,9 @@ const EventCard = ({
             marginHorizontal: 0,
             marginTop: 5,
             marginBottom: 10,
-            color: isDateOlderBy4Hours(mongoDBDate) ? "grey" : "",
+            backgroundColor: isDateOlderBy4Hours(mongoDBDate)
+              ? Colors.placeholder
+              : "#7F0000",
           }}
         ></DeleteButton>
       ) : (
@@ -579,8 +602,9 @@ const EventCard = ({
           </Text>
           <View
             style={
-              daysCountdown(mongoDBDate) &&
-              daysCountdown(mongoDBDate) === "Over"
+              (daysCountdown(mongoDBDate) &&
+                daysCountdown(mongoDBDate) === "Over") ||
+              daysCountdown(mongoDBDate) === "Live"
                 ? styles.daysCountdownContainerOver
                 : item.home_away === "Home"
                 ? styles.daysCountdownContainerHome

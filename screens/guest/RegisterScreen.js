@@ -50,9 +50,9 @@ const RegisterScreen = ({ navigation }) => {
     const userSetting =
       selectedProfileSetting !== undefined ? selectedProfileSetting : 0;
     const user = {
-      name: username,
-      firstName,
-      lastName,
+      name: username.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       email,
       password,
       isAdminAccount: userRole,
@@ -116,12 +116,12 @@ const RegisterScreen = ({ navigation }) => {
 
   const validateName = (name) => {
     const namePattern = /^[a-zA-Z]+$/;
-    return namePattern.test(name);
+    return namePattern.test(name.trim());
   };
 
   const validateEmail = (email) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+\s*$/i;
-    return emailPattern.test(email);
+    return emailPattern.test(email.trim());
   };
 
   const validatePassword = (password) => {

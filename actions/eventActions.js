@@ -21,7 +21,7 @@ import { proxy } from "../package.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const createEvent =
-  ({ orgid, teamid, date_time, competitor, home_away, link }) =>
+  ({ orgid, teamid, date_time, competitor, home_away, link, event_location }) =>
   (dispatch) => {
     // Headers
     const config = {
@@ -36,6 +36,7 @@ export const createEvent =
       competitor,
       home_away,
       link,
+      event_location,
     });
 
     axios

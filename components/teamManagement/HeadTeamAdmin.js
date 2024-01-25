@@ -147,7 +147,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#353a40",
   },
   profileImg: {
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 25,
