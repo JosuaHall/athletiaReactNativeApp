@@ -149,6 +149,7 @@ export const getOrganizationAndTeam =
 
 export const getOrganizationHome = (organizationid) => (dispatch) => {
   dispatch({ type: ORGANIZATION_IS_LOADING });
+
   axios
     .get(`${proxy}/api/organizations/organization/${organizationid}`)
     .then((res) => {

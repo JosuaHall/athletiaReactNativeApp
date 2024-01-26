@@ -31,6 +31,7 @@ import { getOrganizationHome } from "../../actions/organizationActions";
 import { setActiveEventIndex } from "../../actions/eventActions";
 import { triggerScrollToLatestEvent } from "./../../actions/organizationActions";
 import { resetOpenedWithNotification } from "../../actions/authActions";
+import { snakeCase } from "lodash";
 
 const HomeScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -59,31 +60,16 @@ const HomeScreen = ({ navigation }) => {
   const [selectedOrg, setSelectedOrg] = useState(""); //holds whatever uptodate org object needs to be rendered
   const [refreshing, setRefreshing] = useState(false);
 
-  // Refresh the data
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setRefreshing(true);
-    // Perform the data fetch or any other asynchronous operation here
-    // Re-fetch the data using the existing parameters
-    const fetchOrganizationData = () => {
-      return new Promise((resolve, reject) => {
-        dispatch(getOrganizationHome(homeSelectedOrg._id))
-          .then(() => {
-            resolve();
-          })
-          .catch((error) => {
-            console.log("Error fetching organization data:", error);
-            reject();
-          });
-      });
-    };
 
-    fetchOrganizationData()
-      .then(() => {
-        setRefreshing(false);
-      })
-      .catch(() => {
-        setRefreshing(false);
-      });
+    try {
+      await dispatch(getOrganizationHome(homeSelectedOrg._id));
+      setRefreshing(false);
+    } catch (error) {
+      console.log("Error fetching organization data:", error);
+      setRefreshing(false);
+    }
   };
 
   //checks if user follows any organizations
@@ -160,7 +146,7 @@ const HomeScreen = ({ navigation }) => {
         return;
       }
 
-      const result = await captureRef(homeScreenRef, {
+      let result = await captureRef(homeScreenRef, {
         format: "png",
         quality: 1,
       });
@@ -199,13 +185,20 @@ const HomeScreen = ({ navigation }) => {
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={handleRefresh && scrollTo}
+          onRefresh={() => {
+            handleRefresh();
+            //scrollTo(); // Make sure scrollTo is defined and does what you expect
+          }}
         />
       }
     >
       <View
         ref={homeScreenRef}
-        style={{ color: colors.text, ...styles.container }}
+        style={{
+          color: colors.text,
+          ...styles.container,
+          backgroundColor: colors.background,
+        }}
       >
         {organizations_followed !== undefined ? (
           organizations_followed.length === 0 ? (

@@ -45,6 +45,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
   const user_id = useSelector((state) => state.auth.user._id);
   const org_id = useSelector((state) => state.organization.homeOrgRender._id);
   const teams = useSelector((state) => state.organization.homeOrgRender.teams);
+  const orgIsLoading = useSelector((state) => state.organization.isLoading);
   const user = useSelector((state) => state.auth.user);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -132,10 +133,8 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     if (organization) {
       const processed = processEvents(teams, eventFilter);
       setProcessedEvents(processed);
-      const initialBatch = processed.data.slice(0, 20);
+      const initialBatch = processed.data.slice(0, 15);
       setData(initialBatch);
-      setActiveIndex(processedEvents.activeIndex);
-      dispatch(setActiveEventIndex(processedEvents.activeIndex));
     }
   }, [teams, eventFilter, organization]);
 
@@ -277,7 +276,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     // Check if the user has reached the end and load more items
     if (index === data.length - 1) {
       const nextBatchIndex = index + 1;
-      const nextBatchEndIndex = nextBatchIndex + 20;
+      const nextBatchEndIndex = nextBatchIndex + 15;
 
       if (nextBatchIndex < processedEvents.data.length) {
         const nextBatch = processedEvents.data.slice(
@@ -303,7 +302,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
 
   return (
     <ScrollView style={styles.container} /*onLayout={handleLayoutReady}*/>
-      {teams ? (
+      {teams && !orgIsLoading ? (
         teams.length !== 0 && data && data.length !== 0 ? (
           <Carousel
             data={data} //all events
@@ -312,7 +311,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
             onSnapToItem={onSnapToItem}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
-            firstItem={isLayoutReady ? activeIndex : 0}
+            firstItem={data.length < 3 ? 0 : 3}
             shouldOptimizeUpdates={false} // Disable optimizations to ensure correct rendering
           />
         ) : (

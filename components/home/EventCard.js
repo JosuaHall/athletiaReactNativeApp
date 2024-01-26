@@ -77,15 +77,15 @@ const EventCard = ({
 
     // Return "Over" if the event date is more than 3 hours in the past
     const threeHoursEarlier = new Date(
-      currentDate.getTime() + 3 * 60 * 60 * 1000
+      currentDate.getTime() + 2 * 60 * 60 * 1000
     );
     if (currentDate > threeHoursEarlier && currentDate > mongoDBDate) {
       return "Over";
     }
 
-    // Return "Live" if the event is within 3 hours from now
+    // Return "Live" if the event is within 2 hours from now
     const threeHoursLater = new Date(
-      mongoDBDate.getTime() + 3 * 60 * 60 * 1000
+      mongoDBDate.getTime() + 2 * 60 * 60 * 1000
     );
     if (currentDate >= mongoDBDate && currentDate < threeHoursLater) {
       return "Live";

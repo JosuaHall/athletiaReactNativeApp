@@ -12,7 +12,14 @@ const ShareScreen = ({ route }) => {
   const handleSharing = async () => {
     try {
       if (url) {
-        await Sharing.shareAsync(url);
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync("file://" + url, {
+            UTI: Platform.OS === "ios" ? "public.image" : undefined, // Uniform Type Identifier
+            // Additional options as needed (refer to documentation)
+          });
+        } else {
+          console.error("Sharing is not available on this device.");
+        }
       } else {
         console.error("No screenshot captured.");
       }
