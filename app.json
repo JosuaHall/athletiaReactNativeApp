@@ -3,7 +3,7 @@
     "name": "Athletia",
     "slug": "athletia-app",
     "description": "Athletia is a platform which provides the foundation for increasing the relationship between fans and sport organizations, by providing a unique fan focused platform which benefits both the fans themselves and the organizations who uses this platform. Athletia`s main goal is to increase attendance at sports events and drives fan satisfaction and well-being for any organization which uses its platform. ",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
