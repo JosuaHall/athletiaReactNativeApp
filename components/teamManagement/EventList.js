@@ -23,6 +23,7 @@ const EventList = ({ navigation, onPress }) => {
   const eventUpdated = useSelector((state) => state.event.isUpdated);
   const eventList = useSelector((state) => state.event.event_list);
   const isLoading = useSelector((state) => state.event.isLoadingEvents);
+  const isSelectedOrgLoading = useSelector((state) => state.event.orgIsLoading);
 
   useEffect(() => {
     dispatch(getEventList(orgid, _id));
@@ -71,7 +72,7 @@ const EventList = ({ navigation, onPress }) => {
 
   return (
     <View style={styles.container}>
-      {!isLoading ? (
+      {!isSelectedOrgLoading && !isLoading && events && eventList ? (
         events.length !== 0 ? (
           events.map((event, index) => (
             <View key={event._id}>

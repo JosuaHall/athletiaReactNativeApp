@@ -134,6 +134,7 @@ export const getOrganization = (organizationid) => (dispatch) => {
 export const getOrganizationAndTeam =
   (organizationId, teamId) => (dispatch) => {
     dispatch({ type: ORGANIZATION_IS_LOADING });
+    dispatch({ type: TEAM_SELECTED, teamId });
     axios
       .get(
         `${proxy}/api/organizations/organization/team/${organizationId}/${teamId}`

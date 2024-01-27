@@ -189,6 +189,7 @@ const HomeScreen = ({ navigation }) => {
             handleRefresh();
             //scrollTo(); // Make sure scrollTo is defined and does what you expect
           }}
+          tintColor={colors.background}
         />
       }
     >

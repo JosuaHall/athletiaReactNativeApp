@@ -52,23 +52,25 @@ const EventCard = ({
 
   const getFormattedDate = (date) => {
     const mongoDBDate = new Date(date);
+
     const timeString = mongoDBDate.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
     });
-    const timezoneAbbreviation = mongoDBDate
-      .toLocaleTimeString("en-US", {
-        timeZoneName: "short",
-      })
-      .split(" ")[2];
+
+    const timeZoneAbbreviation = new Intl.DateTimeFormat("en-US", {
+      timeZoneName: "short",
+    })
+      .formatToParts(mongoDBDate)
+      .find((part) => part.type === "timeZoneName").value;
 
     return `${mongoDBDate.toLocaleDateString("en-US", {
       weekday: "short",
       day: "numeric",
       month: "short",
       year: "numeric",
-    })}  @ ${timeString} ${timezoneAbbreviation}`;
+    })}  @ ${timeString} ${timeZoneAbbreviation}`;
   };
 
   const daysCountdown = (date) => {
@@ -621,6 +623,7 @@ const EventCard = ({
         <View style={styles.opponent}>
           <Text
             style={{
+              paddingTop: 10,
               color: item.home_away === "Home" ? "#66cc99" : "#ff9966",
             }}
           >
@@ -722,7 +725,6 @@ const EventCard = ({
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -832,17 +834,18 @@ const styles = StyleSheet.create({
   dateTime: {
     color: "black",
     borderBottomWidth: 2,
-    paddingBottom: 15,
+    paddingBottom: 10,
     borderColor: "lightgrey",
     padding: 0,
     width: "95%",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   sport: {
     color: "red",
     fontWeight: "bold",
-    paddingBottom: 5,
+    marginBottom: 5,
+    marginTop: 5,
   },
   image: {
     width: 90,

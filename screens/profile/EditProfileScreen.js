@@ -1,6 +1,14 @@
 // EditProfileScreen.js
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import CreateButton from "../../components/CreateButton";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +24,7 @@ import {
   resetUpdatedSocials,
 } from "./../../actions/authActions";
 import DropDownProfileSetting from "../../components/register/DropDownProfileSetting";
+import { Ionicons } from "@expo/vector-icons";
 
 const EditProfileScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -25,6 +34,7 @@ const EditProfileScreen = ({ navigation }) => {
   const [isPrivate, setIsPrivate] = useState(user.isPrivate);
   const [msg, setMsg] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Track if the button should be disabled
+  const [privacyInfo, togglePrivacyInfo] = useState(false);
 
   useEffect(() => {
     if (profilePic.uri !== user.profileImg) {
@@ -108,16 +118,75 @@ const EditProfileScreen = ({ navigation }) => {
         onImageSelected={handleImageSelected}
       ></SquareImagePicker>
 
-      <Text style={{ color: colors.text, ...styles.header }}>{user.name}</Text>
+      <CreateButton
+        onPress={updateProfile}
+        label="Update Profile Picture"
+        disabled={isButtonDisabled} // Disable the button if isButtonDisabled is true
+        styling={isButtonDisabled ? styles.disabledButton : null} // Apply disabled styling if isButtonDisabled is true
+      ></CreateButton>
+
+      <View style={{ marginTop: 20 }}>
+        <Text style={{ color: colors.text, ...styles.header }}>
+          {user.name}
+        </Text>
+      </View>
       <Text
         style={{ color: colors.text, ...styles.header, fontWeight: "normal" }}
       >
         {user.email}
       </Text>
 
-      <Text style={{ color: colors.text, paddingTop: 20, textAlign: "center" }}>
-        Profile Visibility:
-      </Text>
+      <View>
+        <Text
+          style={{ color: colors.text, paddingTop: 20, textAlign: "center" }}
+        >
+          Profile Visibility:
+        </Text>
+
+        <TouchableOpacity
+          style={{ position: "absolute", right: 10, top: 15 }}
+          onPress={() => togglePrivacyInfo(!privacyInfo)}
+        >
+          <Ionicons
+            size={25}
+            name="ios-information-circle-outline"
+            color="orange"
+          />
+        </TouchableOpacity>
+      </View>
+
+      {privacyInfo ? (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#ff761a",
+            padding: 10,
+            borderRadius: 5,
+            marginTop: 20,
+            position: "relative",
+            width: Dimensions.get("window").width - 20,
+            zIndex: 999,
+          }}
+        >
+          <Ionicons
+            size={20}
+            name="ios-information-circle-outline"
+            color="orange"
+          />
+          <Text
+            style={{
+              color: colors.text,
+              textAlign: "left",
+              paddingHorizontal: 10,
+            }}
+          >
+            When in private mode, this will hide your profile picture from other
+            users when attending an event.
+          </Text>
+        </View>
+      ) : null}
+
       <DropDownProfileSetting
         selectedValue={isPrivate}
         onSelect={handleIsPrivate}
@@ -130,20 +199,7 @@ const EditProfileScreen = ({ navigation }) => {
         }}
       />
 
-      <CreateButton
-        onPress={updateProfile}
-        label="Update Profile Picture"
-        disabled={isButtonDisabled} // Disable the button if isButtonDisabled is true
-        styling={isButtonDisabled ? styles.disabledButton : null} // Apply disabled styling if isButtonDisabled is true
-      ></CreateButton>
-
-      <DeleteButton
-        onPress={logOut}
-        styling={{ margin: 0, marginVertical: 20 }}
-        label="Logout"
-      ></DeleteButton>
-
-      <View style={{ marginVertical: 10 }}>
+      <View style={{ marginVertical: 30, paddingTop: 20 }}>
         <Text style={{ color: "#808080", textAlign: "center" }}>
           Your safety and statisfaction are our top priorities. If you have any
           concerns regarding user safety, or any other issues, please do not
@@ -152,16 +208,29 @@ const EditProfileScreen = ({ navigation }) => {
         </Text>
       </View>
 
-      <DeleteButton
-        onPress={delAccount}
-        label="Delete Account"
-        styling={{
-          backgroundColor: "transparent",
-          margin: 0,
-          marginBottom: 30,
-        }}
-        textColor={{ color: "#7F0000" }}
-      ></DeleteButton>
+      <View style={{ marginHorizontal: Dimensions.get("window").width / 3.5 }}>
+        <DeleteButton
+          onPress={logOut}
+          styling={{
+            backgroundColor: "transparent",
+            margin: 0,
+            marginVertical: 20,
+          }}
+          textColor={{ color: "#7F0000" }}
+          label="Logout"
+        ></DeleteButton>
+
+        <DeleteButton
+          onPress={delAccount}
+          label="Delete Account"
+          styling={{
+            backgroundColor: "transparent",
+            margin: 0,
+            marginBottom: 30,
+          }}
+          textColor={{ color: "#7F0000" }}
+        ></DeleteButton>
+      </View>
     </ScrollView>
   );
 };

@@ -370,6 +370,7 @@ const OrganizationSetupStackScreen = () => {
 const HomeStackScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+  const eventFilter = useSelector((state) => state.event.filter);
 
   return (
     <HomeStack.Navigator>
@@ -388,9 +389,26 @@ const HomeStackScreen = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.navigate("FilterEvents")}
             >
+              {eventFilter &&
+                ((eventFilter.homeAway === "Home & Away" &&
+                  eventFilter.teams &&
+                  eventFilter.teams.length > 0) ||
+                  eventFilter.homeAway !== "Home & Away") && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      backgroundColor: "#3296f8",
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
+                    }}
+                  />
+                )}
               <Text
                 style={{
-                  color: colors.text,
+                  color: eventFilter ? "#3296f8" : colors.text,
                   padding: 10,
                 }}
               >
@@ -576,10 +594,12 @@ const YourProfileStackScreen = () => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [socialsUpdated, setSocialsUpdated] = useState(false);
+
   const requests = useSelector(
     (state) => state.team.team_admin_requests_profile
   );
-
+  const hasSocials = useSelector((state) => state.auth.user.socials);
   const userId = useSelector((state) => state.auth.user._id);
   const updatedSocials = useSelector((state) => state.auth.updatedSocials);
 
@@ -594,6 +614,7 @@ const YourProfileStackScreen = () => {
   }, [requests]);
 
   const onSaveSocials = (navigation) => {
+    setSocialsUpdated(true);
     dispatch(saveUpdatedSocials(userId, updatedSocials));
     navigation.navigate("EditProfile");
   };
@@ -818,23 +839,44 @@ const YourProfileStackScreen = () => {
             fontSize: 18,
           },
           headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("ProfileSettings")}
-            >
-              <Text
-                style={{
-                  color: colors.text,
-                  height: "100%",
-                  padding: 5,
-                }}
+            <View>
+              {hasSocials && hasSocials.length === 0 && !socialsUpdated && (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 30,
+                    width: 80,
+                    padding: 2,
+                    backgroundColor: "#3296f8",
+                    borderRadius: 6,
+                    borderBottomRightRadius: 0,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ color: colors.text, fontSize: "12px" }}>
+                    add socials
+                  </Text>
+                </View>
+              )}
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ProfileSettings")}
               >
-                <Ionicons
-                  name="ios-link-outline"
-                  size={24}
-                  color={colors.text}
-                />
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: colors.text,
+                    height: "100%",
+                    padding: 5,
+                  }}
+                >
+                  <Ionicons
+                    name="ios-link-outline"
+                    size={24}
+                    color={"#3296f8"}
+                  />
+                </Text>
+              </TouchableOpacity>
+            </View>
           ),
         })}
         component={EditProfileScreen}

@@ -98,6 +98,7 @@ const FilterEventsScreen = ({ navigation }) => {
           options={dropdownOptions}
           onSelect={handleDropdownSelect}
           selectedValue={homeAway}
+          styling={homeAway !== "Home & Away" ? { borderColor: "#3296f8" } : ""}
         />
       </View>
       {/*

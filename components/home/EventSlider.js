@@ -111,7 +111,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     }
   };*/
 
-  //scroll to latest item
+  /*scroll to latest item
   useImperativeHandle(ref, () => ({
     scrollToItem: () => {
       if (carouselRef.current) {
@@ -126,7 +126,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
         carouselRef.current.snapToItem(idx);
       }
     },
-  }));
+  }));*/
 
   // Set the initial data
   useEffect(() => {
@@ -134,6 +134,9 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
       const processed = processEvents(teams, eventFilter);
       setProcessedEvents(processed);
       const initialBatch = processed.data.slice(0, 15);
+
+      setActiveIndex(undefined);
+      setActiveEventIndex(undefined);
       setData(initialBatch);
     }
   }, [teams, eventFilter, organization]);
@@ -272,6 +275,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
 
   const onSnapToItem = (index) => {
     setActiveIndex(index);
+    console.log(index);
 
     // Check if the user has reached the end and load more items
     if (index === data.length - 1) {
@@ -300,10 +304,11 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     />
   );
 
+  const startIndex = data?.length;
   return (
     <ScrollView style={styles.container} /*onLayout={handleLayoutReady}*/>
       {teams && !orgIsLoading ? (
-        teams.length !== 0 && data && data.length !== 0 ? (
+        teams.length !== 0 && data && startIndex !== 0 ? (
           <Carousel
             data={data} //all events
             ref={carouselRef}
@@ -311,7 +316,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
             onSnapToItem={onSnapToItem}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
-            firstItem={data.length < 3 ? 0 : 3}
+            firstItem={startIndex < 3 ? 0 : 3}
             shouldOptimizeUpdates={false} // Disable optimizations to ensure correct rendering
           />
         ) : (

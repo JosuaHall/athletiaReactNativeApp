@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../config/Colors";
 import { useTheme } from "@react-navigation/native";
 
-const DropdownList = ({ options, selectedValue, onSelect }) => {
+const DropdownList = ({ options, selectedValue, onSelect, styling }) => {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -27,7 +27,11 @@ const DropdownList = ({ options, selectedValue, onSelect }) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={handlePress}
-        style={{ backgroundColor: colors.card, ...styles.dropdownButton }}
+        style={{
+          backgroundColor: colors.card,
+          ...styles.dropdownButton,
+          ...styling,
+        }}
       >
         <Text style={{ color: colors.text, ...styles.dropdownButtonText }}>
           {selectedValue}

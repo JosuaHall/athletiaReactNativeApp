@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import UnfollowButton from "./../UnfollowButton";
 import { unfollowOrganization } from "../../actions/authActions";
 import { RESET_FILTERED_HOME_ORGANIZATION } from "../../actions/types";
+import Colors from "../../config/Colors";
 
 const OrganizationHeaderHome = ({ organization }) => {
   const { colors } = useTheme();
@@ -41,7 +42,11 @@ const OrganizationHeaderHome = ({ organization }) => {
             </Text>
           </View>
           <UnfollowButton
-            styling={{ padding: 10 }}
+            styling={{
+              padding: 10,
+              color: "#3296f8",
+              borderColor: "#3296f8",
+            }}
             onPress={() => onUnfollow()}
           ></UnfollowButton>
         </Fragment>
