@@ -1,7 +1,7 @@
 {
   "name": "athletia",
   "slug": "athletia",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "npx expo start",
@@ -59,7 +59,7 @@
     "react-test-renderer": "^18.1.0"
   },
   "expo": {
-    "version": "1.0.9",
+    "version": "1.0.10",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.josuahall.athletiaapp",
