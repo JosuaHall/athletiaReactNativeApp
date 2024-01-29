@@ -135,7 +135,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
       setProcessedEvents(processed);
       const initialBatch = processed.data.slice(0, 11);
 
-      setActiveIndex(undefined);
+      setActiveIndex(processed.activeIndex);
       setActiveEventIndex(undefined);
       setData(initialBatch);
     }
@@ -303,11 +303,13 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     />
   );
 
-  const startIndex = data?.length;
+  const index = data?.findIndex(
+    (event) => new Date(event.date_time) > threeHoursLater
+  );
   return (
     <ScrollView style={styles.container} /*onLayout={handleLayoutReady}*/>
       {teams && !orgIsLoading ? (
-        teams.length !== 0 && data && startIndex !== 0 ? (
+        teams.length !== 0 && data && data.length !== 0 ? (
           <Carousel
             data={data} //all events
             ref={carouselRef}
@@ -315,7 +317,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
             onSnapToItem={onSnapToItem}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
-            firstItem={startIndex < 3 ? 0 : 3}
+            firstItem={index}
             shouldOptimizeUpdates={false} // Disable optimizations to ensure correct rendering
           />
         ) : (
