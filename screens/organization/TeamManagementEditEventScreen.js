@@ -106,6 +106,23 @@ const TeamManagementEditEventScreen = ({ navigation, route }) => {
     navigation.navigate("TeamManagement");
   };*/
 
+  //fill in the stream link depending on away or home AND if available
+  const handleHomeAway = (selectedValue) => {
+    setHomeAway(selectedValue);
+    if (selectedValue !== "" && eventOpponent)
+      determineStreamLinkAndLocation(selectedValue);
+  };
+
+  const determineStreamLinkAndLocation = (value) => {
+    if (value === "Home") {
+      setStreamLink(org.stream_link || "");
+      setEventLocation(org.location || null);
+    } else if (value === "Away") {
+      setStreamLink(eventOpponent.stream_link || "");
+      setEventLocation(eventOpponent.location || null);
+    }
+  };
+
   const deleteEventObj = () => {
     //{orgid, teamid, eventid}
     const obj = {
@@ -156,7 +173,7 @@ const TeamManagementEditEventScreen = ({ navigation, route }) => {
               </Text>
               <DropdownList
                 options={dropdownOptions}
-                onSelect={setHomeAway}
+                onSelect={(option) => handleHomeAway(option)}
                 selectedValue={homeAway}
               ></DropdownList>
             </View>

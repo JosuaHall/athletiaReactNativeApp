@@ -33,7 +33,7 @@ const DropdownList = ({ options, selectedValue, onSelect, styling }) => {
           ...styling,
         }}
       >
-        <Text style={{ color: colors.text, ...styles.dropdownButtonText }}>
+        <Text style={{ ...styles.dropdownButtonText, color: colors.text }}>
           {selectedValue}
         </Text>
         <Ionicons

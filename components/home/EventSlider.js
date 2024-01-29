@@ -133,7 +133,7 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
     if (organization) {
       const processed = processEvents(teams, eventFilter);
       setProcessedEvents(processed);
-      const initialBatch = processed.data.slice(0, 15);
+      const initialBatch = processed.data.slice(0, 11);
 
       setActiveIndex(undefined);
       setActiveEventIndex(undefined);
@@ -275,12 +275,11 @@ const EventSlider = ({ organization, navigation, route, onShare }, ref) => {
 
   const onSnapToItem = (index) => {
     setActiveIndex(index);
-    console.log(index);
 
     // Check if the user has reached the end and load more items
     if (index === data.length - 1) {
       const nextBatchIndex = index + 1;
-      const nextBatchEndIndex = nextBatchIndex + 15;
+      const nextBatchEndIndex = nextBatchIndex + 11;
 
       if (nextBatchIndex < processedEvents.data.length) {
         const nextBatch = processedEvents.data.slice(

@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   acceptRequest,
   deleteTeamAdminRequestEntry,
+  loadTeamAdminRequests,
 } from "../../actions/teamActions";
 
 const Notifications = ({ navigation }) => {
@@ -23,6 +25,8 @@ const Notifications = ({ navigation }) => {
   const requests = useSelector(
     (state) => state.team.team_admin_requests_profile
   );
+  const user = useSelector((state) => state.auth.user);
+  const isLoading = useSelector((state) => state.team.isLoadingRequests);
   const [pendingRequests, setPendingRequests] = useState([]);
 
   useEffect(() => {
@@ -42,6 +46,10 @@ const Notifications = ({ navigation }) => {
   const handleDeclineRequest = (requestid) => {
     dispatch(deleteTeamAdminRequestEntry(requestid));
     navigation.navigate("Profile");
+  };
+
+  const handleRefresh = () => {
+    dispatch(loadTeamAdminRequests(user._id));
   };
 
   return (
@@ -119,6 +127,13 @@ const Notifications = ({ navigation }) => {
             </View>
           </View>
         )}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={handleRefresh}
+            tintColor={colors.text}
+          />
+        }
       />
     </View>
   );
